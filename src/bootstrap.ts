@@ -1,11 +1,11 @@
 import { ConfigService } from './config/config.service';
-import { MyLoggerService } from './common/logger.service';
+import { LoggerService } from './common/logger.service';
 
 export default async function bootstrap(app, listening = true) {
   const configService: ConfigService = app.get(ConfigService);
-  const myLoggerService: MyLoggerService = app.get(MyLoggerService);
+  const loggerService: LoggerService = app.get(LoggerService);
 
-  myLoggerService.info({
+  loggerService.info({
     message: 'Starting Nest application...',
     data: {
       NODE_ENV: process.env.NODE_ENV,
@@ -14,7 +14,7 @@ export default async function bootstrap(app, listening = true) {
   });
   if (listening) {
     await app.listen(configService.server.port);
-    myLoggerService.info({
+    loggerService.info({
       message: 'Nest application successfully started',
     });
   }
