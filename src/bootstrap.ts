@@ -15,7 +15,9 @@ export default async function bootstrap(app, listening = true) {
     },
   });
 
-  const fileStore = new FileStore();
+  const fileStore = new FileStore({
+    path: './storage/sessions',
+  });
   app.use(
     session({
       secret: 'kova',
