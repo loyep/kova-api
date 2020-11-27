@@ -43,12 +43,6 @@ export default {
     imgMaxSizeError: '图片大小不能超过%sM',
     userLevelChapterURL: 'https://www.golang123.com/books/90/chapters/1515', // 用户等级在《如何使用米粒社区》中的章节url
   },
-  statsD: {
-    host: 'localhost',
-    port: 8125,
-    prefix: 'mili_',
-    protocol: 'udp',
-  },
   server: {
     siteName: '米粒',
     companyName: '北京xxxxxxx有限公司',
