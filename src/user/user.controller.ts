@@ -1,4 +1,3 @@
-import * as util from 'util';
 import {
   Controller,
   Post,
@@ -12,6 +11,7 @@ import {
   Delete,
   Req,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ConfigService } from '../config/config.service';
 
 @Controller()
@@ -19,11 +19,12 @@ export class UserController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get('/login')
-  login(@Req() req) {
-    const username = req.session.username;
-    if (username) {
-      req.session.userId = 1;
-      return username;
+  @Post('/login')
+  login(@Req() req: any, @Res() res: Response) {
+    if (req.user) {
+      return res.json({
+        user: req.user,
+      });
     }
     req.session.username = new Date();
     return '无数据';

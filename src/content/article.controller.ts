@@ -11,7 +11,7 @@ import {
   Res,
   Delete,
 } from '@nestjs/common';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from '@/config/config.service';
 
 @Controller()
 export class ArticleController {

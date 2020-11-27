@@ -1,9 +1,13 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
 import { CommonModule } from './common/common.module';
 import { UserModule } from './user/user.module';
+import { CorsMiddleware } from './core/middleware/cors.middleware';
+import { CSRFMiddleware } from './core/middleware/csrf.middleware';
+import { UserMiddleware } from './core/middleware/user.middleware';
+import { SessionMiddleware } from './core/middleware/session.middleware';
 
 @Module({
   imports: [
@@ -22,4 +26,19 @@ import { UserModule } from './user/user.module';
 })
 export class AppModule {
   constructor(private readonly configService: ConfigService) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    const middlewares = [
+      // IpMiddleware,
+      // CookieParserMiddleware,
+      // RateLimitMiddleware,
+      // CorsMiddleware,
+      // CSRFMiddleware,
+      SessionMiddleware,
+      UserMiddleware,
+    ];
+    consumer
+      .apply(...middlewares)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
 }
