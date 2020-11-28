@@ -19,14 +19,14 @@ export class UserController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get('/login')
-  @Post('/login')
   login(@Req() req: any, @Res() res: Response) {
     if (req.user) {
       return res.json({
         user: req.user,
       });
     }
-    req.session.username = new Date();
-    return '无数据';
+    return res.json({
+      user: null,
+    });
   }
 }

@@ -1,52 +1,63 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
-import { User } from './user.entity';
-import { Category } from './category.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Post } from './post.entity';
+
+export interface TagMeta {
+  cover: string;
+  color: string;
+  background: string;
+}
+
+export const defaultMeta: TagMeta = {
+  cover: '',
+  background: '',
+  color: '',
+};
 
 @Entity({ name: 'tags' })
 export class Tag {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
-  @Column('datetime', { name: 'created_at' })
-  createdAt: Date;
-
-  @Column('datetime', { name: 'updated_at' })
-  updatedAt: Date;
-
-  @Column('varchar', { length: 200 })
+  @Column('varchar', { unique: true })
   name: string;
 
-  @Column('int', { name: 'follower_count', default: 0 })
-  followerCount: number; // 被多少人关注
+  @Column('varchar', { unique: true })
+  slug: string;
 
-  @Column('int', { name: 'article_count', default: 0 })
-  articleCount: number;
+  @Column('tinytext', { nullable: true, default: null })
+  description?: string;
 
-  @Column('varchar', {
-    name: 'icon_url',
-    length: 500,
+  @Column('varchar', { nullable: true, default: null })
+  image: string | null;
+
+  @Column('simple-json', { default: null, select: true })
+  meta: TagMeta;
+
+  @Column('bigint', { name: 'posts_count', unsigned: true, default: 0 })
+  postsCount: number;
+
+  @Column('datetime', {
+    name: 'created_at',
+    default: () => 'NOW()',
+    select: false,
+  })
+  createdAt: Date;
+
+  @Column('datetime', {
+    name: 'updated_at',
+    default: () => 'NOW()',
+    select: false,
+  })
+  updatedAt: Date;
+
+  @Column('datetime', {
+    name: 'deleted_at',
     nullable: true,
     default: null,
+    select: false,
   })
-  iconURL: string;
+  deletedAt: Date;
 
-  @ManyToMany(() => Category)
-  @JoinTable({
-    name: 'tag_category',
-    joinColumn: {
-      name: 'tag_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'category_id',
-      referencedColumnName: 'id',
-    },
-  })
-  categories: Category[];
+  @ManyToMany(() => Post, (post: Post) => post.tags)
+  posts: Promise<Post[]>;
 }

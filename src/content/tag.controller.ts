@@ -1,4 +1,4 @@
-import * as util from 'util';
+import { APIPrefix, AdminAPIPrefix } from '../constants/constants';
 import {
   Controller,
   Post,
@@ -15,23 +15,24 @@ import { ConfigService } from '@/config/config.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@/entity/user.entity';
-import { Article, ArticleStatus } from '@/entity/article.entity';
-import { ArticleService } from './article.service';
+import { Article } from '@/entity/article.entity';
+import { Category } from '@/entity/category.entity';
+import { TagService } from './tag.service';
 
 @Controller()
-export class ArticleController {
+export class TagController {
   constructor(
     private readonly configService: ConfigService,
-    private readonly articleService: ArticleService,
+    private readonly tagService: TagService,
   ) {}
 
   @Get('/p/:slug')
   async getPost(@Param('slug') slug: string, @Res() res) {
     return;
   }
-
+  @Get(`${APIPrefix}/categories`)
   async all() {
-    const articles: Article[] = await this.articleService.all();
-    return articles;
+    const categories: Category[] = await this.tagService.all();
+    return categories;
   }
 }

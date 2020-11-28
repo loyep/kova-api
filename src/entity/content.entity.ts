@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
 } from 'typeorm';
-import { Article } from './article.entity';
+import { Post } from './post.entity';
 
 @Entity({ name: 'contents' })
 export class Content {
@@ -24,9 +24,9 @@ export class Content {
   @Column('varchar', { nullable: true, default: null })
   type: string;
 
-  @OneToOne(() => Article)
+  @OneToOne(() => Post, (post: Post) => post.content)
   @JoinColumn({ name: 'post_id' })
-  artilce?: Article;
+  post?: Post;
 
   @Column('datetime', { name: 'created_at' })
   createdAt: Date;

@@ -14,41 +14,41 @@ import { User } from './user.entity';
 import { Tag } from './tag.entity';
 import { Content } from './content.entity';
 
-export interface ArticleMeta {
+export interface PostMeta {
   cover: string;
   color: string;
   background: string;
 }
 
-export const defaultMeta: ArticleMeta = {
+export const defaultMeta: PostMeta = {
   cover: '',
   background: '',
   color: '',
 };
 
-export enum ArticleStatus {
+export enum PostStatus {
   published = 'published',
   private = 'private',
   password = 'password',
   draft = 'draft',
 }
 
-export enum ArticleCommentType {
+export enum PostCommentType {
   allow = 'allow',
   refuse = 'refuse',
   commented = 'commented',
   logged = 'logged',
 }
 
-export enum ArticleType {
+export enum PostType {
   default = 'default',
   // refuse = 'refuse',
   // commented = 'commented',
   // logged = 'logged',
 }
 
-@Entity({ name: 'articles' })
-export class Article {
+@Entity({ name: 'posts' })
+export class Post {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
@@ -56,7 +56,7 @@ export class Article {
   @Index({ fulltext: true })
   title: string;
 
-  @Column('varchar', { default: ArticleStatus.published })
+  @Column('varchar', { default: PostStatus.published })
   @Index()
   status: string;
 
@@ -71,7 +71,7 @@ export class Article {
   excerpt: string | null;
 
   @Column('simple-json', { default: null, select: true })
-  meta: ArticleMeta;
+  meta: PostMeta;
 
   @OneToOne(() => Content, (content: Content) => content.post)
   content: Content | null;
@@ -87,7 +87,7 @@ export class Article {
   @Column('tinytext', { nullable: true, default: null })
   cover: string | null;
 
-  @Column('varchar', { default: ArticleType.default })
+  @Column('varchar', { default: PostType.default })
   type: string;
 
   @Column('int', { name: 'views_count', unsigned: true, default: 0 })
@@ -99,10 +99,7 @@ export class Article {
   @Column('int', { name: 'comments_count', unsigned: true, default: 0 })
   commentsCount: number;
 
-  @Column('varchar', {
-    name: 'comment_type',
-    default: ArticleCommentType.allow,
-  })
+  @Column('varchar', { name: 'comment_type', default: PostCommentType.allow })
   commentType: string;
 
   @Column('varchar', { nullable: true, default: null, select: false })
@@ -153,11 +150,11 @@ export class Article {
   })
   userId: number;
 
-  prev: Article | null;
+  prev: Post | null;
 
-  next: Article | null;
+  next: Post | null;
 
-  related: Article[];
+  related: Post[];
 
   @ManyToMany(() => Tag, (tag: Tag) => tag.posts)
   @JoinTable({

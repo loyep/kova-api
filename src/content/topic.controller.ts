@@ -15,14 +15,15 @@ import { ConfigService } from '@/config/config.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@/entity/user.entity';
-import { Article, ArticleStatus } from '@/entity/article.entity';
-import { ArticleService } from './article.service';
+import { Post as PostEntity, PostStatus } from '@/entity/post.entity';
+import { Topic } from '@/entity/topic.entity';
+import { TopicService } from './topic.service';
 
 @Controller()
-export class ArticleController {
+export class TopicController {
   constructor(
     private readonly configService: ConfigService,
-    private readonly articleService: ArticleService,
+    private readonly topicService: TopicService,
   ) {}
 
   @Get('/p/:slug')
@@ -31,7 +32,6 @@ export class ArticleController {
   }
 
   async all() {
-    const articles: Article[] = await this.articleService.all();
-    return articles;
+    return await this.topicService.all();
   }
 }

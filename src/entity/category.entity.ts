@@ -1,35 +1,55 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
-import { User } from './user.entity';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Post } from './post.entity';
+
+export interface CategoryMeta {
+  cover: string;
+  color: string;
+  background: string;
+}
+
+export const defaultMeta: CategoryMeta = {
+  cover: '',
+  background: '',
+  color: '',
+};
 
 @Entity({ name: 'categories' })
 export class Category {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
-  @Column('datetime', { name: 'created_at' })
-  createdAt: Date;
-
-  @Column('datetime', { name: 'updated_at' })
-  updatedAt: Date;
-
-  @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
-  deletedAt: Date;
-
-  @Column('varchar', { length: 200 })
+  @Column('varchar')
   name: string;
 
-  @Column('int')
-  sequence: number;
+  @Column('varchar', { unique: true })
+  slug: string;
 
-  @Column('int', { name: 'parent_id' })
-  parentID: number;
+  @Column('tinytext', { nullable: true, default: null })
+  description?: string;
 
-  @Column('int', { name: 'follower_count' })
-  followerCount: number; // 有多少人关注
+  @Column('varchar', { nullable: true, default: null })
+  image: string | null;
 
-  @Column('int', { name: 'article_count' })
-  articleCount: number; // 有多少人关注
+  @Column('simple-json', { default: null, select: true })
+  meta: CategoryMeta;
 
-  @Column('varchar', { length: 50 })
-  pathname: string;
+  @Column('bigint', { name: 'posts_count', unsigned: true, default: 0 })
+  postsCount: number;
+
+  @Column('datetime', { name: 'created_at', select: false })
+  createdAt: Date;
+
+  @Column('datetime', { name: 'updated_at', select: false })
+  updatedAt: Date;
+
+  @Column('datetime', {
+    name: 'deleted_at',
+    nullable: true,
+    default: null,
+    select: false,
+  })
+  deletedAt: Date;
+
+  @OneToMany(() => Post, (post: Post) => post.category)
+  posts: Promise<Post[]>;
 }
