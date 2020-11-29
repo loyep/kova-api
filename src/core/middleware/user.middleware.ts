@@ -6,21 +6,23 @@ import { User } from '@/entity/user.entity';
 
 @Injectable()
 export class UserMiddleware implements NestMiddleware {
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
-  async use(request: Request, response: Response, next: () => void) {
+  use(request: Request, response: Response, next: () => void) {
     const req: any = request;
     const res: any = response;
 
     req.user = null;
-    const userID = req.session.userId;
-    if (userID) {
-      const user: User = await this.userService.getUser(userID);
-      req.user = user;
+    const userId = req.session.userId;
+    if (!userId) {
+      next();
+      return;
     }
-    next();
+
+    this.userService.getUser(userId).then((user) => {
+      req.user = user;
+      console.log('req.user', req.user);
+      next();
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Post } from './post.entity';
+import { Article } from './article.entity';
 
 export interface CategoryMeta {
   cover: string;
@@ -33,8 +33,8 @@ export class Category {
   @Column('simple-json', { default: null, select: true })
   meta: CategoryMeta;
 
-  @Column('bigint', { name: 'posts_count', unsigned: true, default: 0 })
-  postsCount: number;
+  @Column('bigint', { name: 'articles_count', unsigned: true, default: 0 })
+  articlesCount: number;
 
   @Column('datetime', { name: 'created_at', select: false })
   createdAt: Date;
@@ -50,6 +50,6 @@ export class Category {
   })
   deletedAt: Date;
 
-  @OneToMany(() => Post, (post: Post) => post.category)
-  posts: Promise<Post[]>;
+  @OneToMany(() => Article, (article: Article) => article.category)
+  articles: Promise<Article[]>;
 }

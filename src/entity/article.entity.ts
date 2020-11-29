@@ -73,7 +73,7 @@ export class Article {
   @Column('simple-json', { default: null, select: true })
   meta: ArticleMeta;
 
-  @OneToOne(() => Content, (content: Content) => content.post)
+  @OneToOne(() => Content, (content: Content) => content.article)
   content: Content | null;
 
   @Column('bigint', {
@@ -125,7 +125,7 @@ export class Article {
   })
   deletedAt: Date;
 
-  @ManyToOne(() => Category, (category: Category) => category.posts, {
+  @ManyToOne(() => Category, (category: Category) => category.articles, {
     onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'category_id' })
@@ -139,7 +139,7 @@ export class Article {
   })
   categoryId: number;
 
-  @ManyToOne(() => User, (user: User) => user.posts, {
+  @ManyToOne(() => User, (user: User) => user.articles, {
     onDelete: 'NO ACTION',
   })
   @JoinColumn({ name: 'user_id' })
@@ -159,10 +159,10 @@ export class Article {
 
   related: Article[];
 
-  @ManyToMany(() => Tag, (tag: Tag) => tag.posts)
+  @ManyToMany(() => Tag, (tag: Tag) => tag.articles)
   @JoinTable({
-    name: 'post_tags',
-    joinColumn: { name: 'post_id', referencedColumnName: 'id' },
+    name: 'article_tags',
+    joinColumn: { name: 'article_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
   })
   tags: Promise<Tag[]>;

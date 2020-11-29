@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Post } from './post.entity';
+import { Article } from './article.entity';
 
 export interface UserMeta {
   cover: string;
@@ -82,6 +82,6 @@ export class User {
   })
   deletedAt: Date;
 
-  @OneToMany(() => Post, (post: Post) => post.user)
-  posts: Promise<Post[]>;
+  @OneToMany(() => Article, (article: Article) => article.user)
+  articles: Promise<Article[]>;
 }

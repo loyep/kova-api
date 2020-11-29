@@ -17,8 +17,8 @@ export class Topic {
   @Column('varchar', { nullable: true, default: null })
   image?: string;
 
-  @Column('bigint', { name: 'posts_count', unsigned: true, default: 0 })
-  postsCount: number;
+  @Column('bigint', { name: 'articles_count', unsigned: true, default: 0 })
+  articlesCount: number;
 
   @Column('datetime', { name: 'created_at', select: false })
   createdAt: Date;

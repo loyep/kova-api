@@ -19,7 +19,7 @@ export class CategoryService {
       order: {
         createdAt: 'DESC',
       },
-    });
+    } as any);
     return categories;
   }
 

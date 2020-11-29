@@ -17,7 +17,7 @@ export class TagService {
       order: {
         createdAt: 'DESC',
       },
-    });
+    } as any);
     return tags;
   }
 }

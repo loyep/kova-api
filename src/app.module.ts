@@ -8,6 +8,7 @@ import { CorsMiddleware } from './core/middleware/cors.middleware';
 import { CSRFMiddleware } from './core/middleware/csrf.middleware';
 import { UserMiddleware } from './core/middleware/user.middleware';
 import { SessionMiddleware } from './core/middleware/session.middleware';
+import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SessionMiddleware } from './core/middleware/session.middleware';
       inject: [ConfigService],
     }),
     CommonModule,
+    ContentModule,
     UserModule,
   ],
 })
@@ -34,7 +36,7 @@ export class AppModule {
       // RateLimitMiddleware,
       // CorsMiddleware,
       // CSRFMiddleware,
-      SessionMiddleware,
+      // SessionMiddleware,
       UserMiddleware,
     ];
     consumer

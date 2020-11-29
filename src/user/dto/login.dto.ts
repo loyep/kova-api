@@ -2,17 +2,17 @@ import { MinLength, IsString, Length, IsEnum } from 'class-validator';
 import { ErrorCode } from '@/constants/error';
 import { UserConstants } from '@/constants/constants';
 
-export enum SigninVerifyType {
+export enum LoginVerifyType {
   phone = 'phone',
   email = 'username',
 }
 
-export class SigninDto {
+export class LoginDto {
   @MinLength(1, {
     message: '手机号码/邮箱地址或密码不正确',
   })
   @IsString()
-  readonly login: string;
+  readonly username: string;
 
   @Length(
     UserConstants.PASSWORD_MIN_LENGTH,
@@ -32,26 +32,26 @@ export class SigninDto {
   })
   readonly password: string;
 
-  @IsEnum(SigninVerifyType, {
-    message: '无效的登录方式',
-  })
-  readonly verifyType: string;
+  // @IsEnum(LoginVerifyType, {
+  //   message: '无效的登录方式',
+  // })
+  // readonly verifyType: string;
 
-  @MinLength(1, {
-    message: 'geetest_challenge不能为空',
-  })
-  @IsString()
-  readonly geetest_challenge: string;
+  // @MinLength(1, {
+  //   message: 'geetest_challenge不能为空',
+  // })
+  // @IsString()
+  // readonly geetest_challenge: string;
 
-  @MinLength(1, {
-    message: 'geetest_validate不能为空',
-  })
-  @IsString()
-  readonly geetest_validate: string;
+  // @MinLength(1, {
+  //   message: 'geetest_validate不能为空',
+  // })
+  // @IsString()
+  // readonly geetest_validate: string;
 
-  @MinLength(1, {
-    message: 'geetest_seccode不能为空',
-  })
-  @IsString()
-  readonly geetest_seccode: string;
+  // @MinLength(1, {
+  //   message: 'geetest_seccode不能为空',
+  // })
+  // @IsString()
+  // readonly geetest_seccode: string;
 }

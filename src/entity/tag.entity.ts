@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Post } from './post.entity';
+import { Article } from './article.entity';
 
 export interface TagMeta {
   cover: string;
@@ -33,8 +33,8 @@ export class Tag {
   @Column('simple-json', { default: null, select: true })
   meta: TagMeta;
 
-  @Column('bigint', { name: 'posts_count', unsigned: true, default: 0 })
-  postsCount: number;
+  @Column('bigint', { name: 'articles_count', unsigned: true, default: 0 })
+  articlesCount: number;
 
   @Column('datetime', {
     name: 'created_at',
@@ -58,6 +58,6 @@ export class Tag {
   })
   deletedAt: Date;
 
-  @ManyToMany(() => Post, (post: Post) => post.tags)
-  posts: Promise<Post[]>;
+  @ManyToMany(() => Article, (article: Article) => article.tags)
+  articles: Promise<Article[]>;
 }

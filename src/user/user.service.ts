@@ -3,17 +3,28 @@ import { ConfigService } from '@/config/config.service';
 import { User } from '@/entity/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  FindOptionsWhere,
+  FindOptionsWhereCondition,
+  Repository,
+} from 'typeorm';
+import { hashSync, compareSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly configService: ConfigService,
     private readonly logger: LoggerService,
   ) {
     //
+  }
+
+  verifyPassword(password: string, oldPwd: string) {
+    if (!password || !oldPwd) {
+      return false;
+    }
+    return compareSync(password, oldPwd);
   }
 
   async getUser(id: number): Promise<User> {
@@ -41,7 +52,7 @@ export class UserService {
       // TODO: users 表增加 level 字段， 然后查出 level
       try {
         user = await this.userRepository.findOne({
-          select: ['id', 'status', 'username'] as any,
+          select: ['id', 'status', 'name', 'avatar', 'displayName', 'email'],
           where: {
             id,
           },
@@ -67,6 +78,14 @@ export class UserService {
       },
     });
 
+    return user;
+  }
+
+  async findUser(where, select) {
+    const user = await this.userRepository.findOne({
+      select,
+      where,
+    });
     return user;
   }
 }

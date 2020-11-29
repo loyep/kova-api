@@ -17,7 +17,7 @@ export class TopicService {
       order: {
         createdAt: 'DESC',
       },
-    });
+    } as any);
     return topics;
   }
 }

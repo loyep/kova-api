@@ -26,11 +26,7 @@ export class TagController {
     private readonly tagService: TagService,
   ) {}
 
-  @Get('/p/:slug')
-  async getPost(@Param('slug') slug: string, @Res() res) {
-    return;
-  }
-  @Get(`${APIPrefix}/categories`)
+  @Get(`${APIPrefix}/tags`)
   async all() {
     const categories: Category[] = await this.tagService.all();
     return categories;
