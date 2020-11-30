@@ -17,6 +17,8 @@ import { APIPrefix } from '@/constants/constants';
 import { ParsePagePipe } from '@/core/pipes/parse-page.pipe';
 import { MustIntPipe } from '@/core/pipes/must-int.pipe';
 import { CurUser } from '@/core/decorators/user.decorator';
+import { ErrorCode } from '@/constants/error';
+import { MyHttpException } from '@/core/exception/my-http.exception';
 
 @Controller()
 export class ArticleController {
@@ -56,18 +58,18 @@ export class ArticleController {
   }
 
   @Get(`${APIPrefix}/article/:slug`)
-  async getBySlug(@Param('slug') slug: string) {
+  async getBySlug(@Param('slug') slug: string, @Res() res) {
     const article = await this.articleService.findBySlug(slug);
     try {
       const [prev, next] = await this.articleService.findNextAndPost(
         article.id,
         article.publishedAt,
       );
-      console.log(prev);
-      console.log(next);
       article.prev = prev;
       article.next = next;
-      return {
+
+      return res.json({
+        errorCode: ErrorCode.SUCCESS.CODE,
         data: {
           ...article,
           related: [],
@@ -75,10 +77,11 @@ export class ArticleController {
             ? encodeURIComponent(article.content.html)
             : '',
         },
-      };
+      });
     } catch (error) {
-      console.log(error);
-      return error;
+      throw new MyHttpException({
+        errorCode: ErrorCode.NotFound.CODE,
+      });
     }
   }
 
@@ -88,17 +91,16 @@ export class ArticleController {
     @Query('page', ParsePagePipe) page: number,
     @Query('category') category: string | number,
     @Query('tag') tag: string | number,
+    @Res() res,
   ) {
     const pageSize = 20;
     const sort = 'publishedAt';
     const order: 'DESC' | 'ASC' = 'DESC';
-    const articles = await this.articleService.list(
-      sort,
-      order,
-      page,
-      pageSize,
-    );
+    const data = await this.articleService.list(sort, order, page, pageSize);
 
-    return articles;
+    return res.json({
+      errorCode: ErrorCode.SUCCESS.CODE,
+      data,
+    });
   }
 }

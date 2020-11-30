@@ -30,4 +30,15 @@ export class CategoryService {
     });
     return !!category;
   }
+
+  async findBySlug(slug: string) {
+    const category = await this.categoryRepository.findOne({
+      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      where: {
+        slug,
+      },
+      relations: [],
+    });
+    return category;
+  }
 }
