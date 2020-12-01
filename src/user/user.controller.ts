@@ -52,6 +52,15 @@ export class UserController {
     });
   }
 
+  @Post(`${APIPrefix}/logout`)
+  async logout(@Req() req, @Res() res) {
+    req.session.userId = '';
+    return res.json({
+      errorCode: ErrorCode.SUCCESS.CODE,
+      message: '退出成功',
+    });
+  }
+
   @Get(`${APIPrefix}/profile`)
   async profile(@CurUser() user, @Res() res) {
     console.log('profile', user);
