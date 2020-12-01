@@ -54,7 +54,10 @@ export class UserController {
 
   @Post(`${APIPrefix}/logout`)
   async logout(@Req() req, @Res() res) {
-    req.session.userId = '';
+    req.session.destroy(function (err) {
+      /*销毁session*/
+    });
+
     return res.json({
       errorCode: ErrorCode.SUCCESS.CODE,
       message: '退出成功',
