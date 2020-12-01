@@ -44,10 +44,11 @@ export class UserController {
         message: '账号或密码不正确',
       });
     }
+    const curUser = await this.userService.getUser(user.id);
     req.session.userId = user.id;
-    res.json({
+    return res.json({
       errorCode: ErrorCode.SUCCESS.CODE,
-      data: { id: user.id },
+      user: curUser,
     });
   }
 
