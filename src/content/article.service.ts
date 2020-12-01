@@ -59,9 +59,11 @@ export class ArticleService {
     });
     return {
       list,
-      count,
-      page,
-      pageSize,
+      meta: {
+        count,
+        page,
+        pageSize,
+      }
     };
   }
 

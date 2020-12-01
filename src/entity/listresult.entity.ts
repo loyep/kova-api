@@ -1,6 +1,8 @@
 export class ListResult<T> {
   list: T[];
-  count: number;
-  page: number;
-  pageSize: number;
+  meta: {
+    count: number;
+    page: number;
+    pageSize: number;
+  };
 }
