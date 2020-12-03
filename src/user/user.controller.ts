@@ -34,6 +34,7 @@ export class UserController {
     }
     const curUser = await this.userService.getUser(user.id);
     req.session.userId = user.id;
+    console.log(req.session.cookie);
     return res.json({
       errorCode: ErrorCode.SUCCESS.CODE,
       user: curUser,
