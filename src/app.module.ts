@@ -4,10 +4,7 @@ import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
 import { CommonModule } from './common/common.module';
 import { UserModule } from './user/user.module';
-import { CorsMiddleware } from './core/middleware/cors.middleware';
-import { CSRFMiddleware } from './core/middleware/csrf.middleware';
 import { UserMiddleware } from './core/middleware/user.middleware';
-import { SessionMiddleware } from './core/middleware/session.middleware';
 import { ContentModule } from './content/content.module';
 
 @Module({

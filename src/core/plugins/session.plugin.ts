@@ -12,7 +12,7 @@ export const sessionPlugin = (_app?: INestApplication) => {
     name: 'kova_session',
     cookie: { maxAge: 60000 * 60 * 12, domain: '.loyep.com' },
     resave: false,
-    rolling: true,
+    // rolling: true,
     saveUninitialized: true,
     store: fileStore,
   });
