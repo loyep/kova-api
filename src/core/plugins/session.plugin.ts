@@ -10,7 +10,7 @@ export const sessionPlugin = (_app?: INestApplication) => {
   const sessionPlugin = session({
     secret: 'kova',
     name: 'kova_session',
-    cookie: { maxAge: 60000 * 60 * 12 },
+    cookie: { maxAge: 60000 * 60 * 12, domain: '.loyep.com' },
     resave: false,
     rolling: true,
     saveUninitialized: true,
