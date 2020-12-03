@@ -3,19 +3,7 @@ import { ErrorCode } from '@/constants/error';
 import { CurUser } from '@/core/decorators/user.decorator';
 import { MyHttpException } from '@/core/exception/my-http.exception';
 import { User } from '@/entity/user.entity';
-import {
-  Controller,
-  Post,
-  Body,
-  Put,
-  UseGuards,
-  Get,
-  Query,
-  Param,
-  Res,
-  Delete,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Res, Req } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
 import { LoginDto } from './dto/login.dto';
 import { UserService } from './user.service';
@@ -66,7 +54,6 @@ export class UserController {
 
   @Get(`${APIPrefix}/profile`)
   async profile(@CurUser() user, @Res() res) {
-    console.log('profile', user);
     if (user) {
       return res.json({
         errorCode: ErrorCode.SUCCESS.CODE,
@@ -76,6 +63,14 @@ export class UserController {
     return res.status(403).json({
       errorCode: ErrorCode.Forbidden.CODE,
       message: 'You are not authorized',
+    });
+  }
+
+  @Get(`${APIPrefix}/curUser`)
+  async user(@CurUser() user, @Res() res) {
+    return res.json({
+      errorCode: ErrorCode.SUCCESS.CODE,
+      user: user || null,
     });
   }
 }
