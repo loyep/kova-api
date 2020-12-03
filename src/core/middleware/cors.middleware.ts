@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { ConfigService } from '../../config/config.service';
-import { LoggerService } from '../../common/logger.service';
+import { ConfigService } from '@/config/config.service';
+import { LoggerService } from '@/common/logger.service';
 
 @Injectable()
 export class CorsMiddleware implements NestMiddleware {

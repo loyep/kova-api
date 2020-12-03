@@ -54,12 +54,12 @@ export class UserController {
 
   @Get(`${APIPrefix}/profile`)
   async profile(@CurUser() user, @Res() res) {
-    if (user) {
-      return res.json({
-        errorCode: ErrorCode.SUCCESS.CODE,
-        user: user,
-      });
-    }
+    // if (user) {
+    //   return res.json({
+    //     errorCode: ErrorCode.SUCCESS.CODE,
+    //     user: user,
+    //   });
+    // }
     return res.status(403).json({
       errorCode: ErrorCode.Forbidden.CODE,
       message: 'You are not authorized',

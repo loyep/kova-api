@@ -21,7 +21,6 @@ export class UserMiddleware implements NestMiddleware {
 
     this.userService.getUser(userId).then((user) => {
       req.user = user;
-      console.log('req.user', req.user);
       next();
     });
   }
