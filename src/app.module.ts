@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import {
+  CacheModule,
+  MiddlewareConsumer,
+  Module,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
@@ -9,6 +14,7 @@ import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
+    CacheModule.register(),
     ConfigModule,
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {
