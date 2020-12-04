@@ -6,6 +6,7 @@ import { User } from '@/entity/user.entity';
 import { Controller, Post, Body, Get, Res, Req } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 import { UserService } from './user.service';
 
 @Controller()
@@ -41,12 +42,37 @@ export class UserController {
     });
   }
 
+  @Post(`${APIPrefix}/register`)
+  async register(@Body() registerDto: RegisterDto, @Req() req, @Res() res) {
+    const user = await this.userService.findUser(
+      {
+        name: registerDto.username,
+      },
+      { id: true, password: true },
+    );
+    if (
+      !user ||
+      !this.userService.verifyPassword(registerDto.password, user.password)
+    ) {
+      throw new MyHttpException({
+        errorCode: ErrorCode.ParamsError.CODE,
+        message: '账号或密码不正确',
+      });
+    }
+    const curUser = await this.userService.getUser(user.id);
+    req.session.userId = user.id;
+    return res.json({
+      errorCode: ErrorCode.SUCCESS.CODE,
+      user: curUser,
+    });
+  }
+
   @Post(`${APIPrefix}/logout`)
   async logout(@Req() req, @Res() res) {
     req.session.destroy(function (err) {
       /*销毁session*/
     });
-
+    req.session.userId = null;
     return res.json({
       errorCode: ErrorCode.SUCCESS.CODE,
       message: '退出成功',
