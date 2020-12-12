@@ -9,11 +9,11 @@ import { TagController } from './tag.controller';
 import { TopicController } from './topic.controller';
 
 // Entities
-import { Article } from '@/entity/article.entity';
-import { Category } from '@/entity/category.entity';
-import { Tag } from '@/entity/tag.entity';
-import { Topic } from '@/entity/topic.entity';
-import { User } from '@/entity/user.entity';
+import { Article } from '@/model/article.entity';
+import { Category } from '@/model/category.entity';
+import { Tag } from '@/model/tag.entity';
+import { Topic } from '@/model/topic.entity';
+import { User } from '@/model/user.entity';
 
 // Services
 import { ArticleService } from './article.service';

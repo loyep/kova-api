@@ -1,17 +1,9 @@
-import * as util from 'util';
-import {
-  Controller,
-  Body,
-  Put,
-  UseGuards,
-  Get,
-  Query,
-  Param,
-  Res,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
 import { TopicService } from './topic.service';
+import { AdminAPIPrefix, APIPrefix } from '@/constants/constants';
+import { Topic } from '@/model/topic.entity';
+import { ErrorCode } from '@/constants/error';
 
 @Controller()
 export class TopicController {
@@ -20,7 +12,29 @@ export class TopicController {
     private readonly topicService: TopicService,
   ) {}
 
-  async all() {
-    return await this.topicService.all();
+  @Get(`${APIPrefix}/tags`)
+  async getAll() {
+    const topics: Topic[] = await this.topicService.all();
+    return topics;
+  }
+
+  @Get(`${APIPrefix}/tags/:slug`)
+  async showBySlug(@Param('slug') slug: string, @Res() res) {
+    const topic = await this.topicService.findBySlug(slug);
+
+    return res.json({
+      code: ErrorCode.SUCCESS.CODE,
+      data: topic,
+    });
+  }
+
+  @Get(`${AdminAPIPrefix}/tags/:id`)
+  async show(@Param('id') id: number, @Res() res) {
+    const topic = await this.topicService.findById(id);
+
+    return res.json({
+      code: ErrorCode.SUCCESS.CODE,
+      data: topic,
+    });
   }
 }

@@ -5,6 +5,7 @@ import testJSON from './cfg.test';
 import productionJSON from './cfg.production';
 import { ServerConfig } from './type/ServerConfig';
 import DBConfig from './type/DBConfig';
+const packageJson = require('../../package.json');
 
 export class ConfigService {
   readonly DEVELOPMENT = 'development';
@@ -34,5 +35,12 @@ export class ConfigService {
       process.exit(-1);
     }
     this.server = new ServerConfig(defaultJSON.server);
+  }
+
+  getVersion(): string {
+    if (!process.env.APP_VERSION) {
+      process.env.APP_VERSION = packageJson.version;
+    }
+    return process.env.APP_VERSION;
   }
 }

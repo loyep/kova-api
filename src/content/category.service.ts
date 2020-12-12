@@ -1,8 +1,7 @@
-import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { Category } from '@/entity/category.entity';
+import { Repository } from 'typeorm';
+import { Category } from '@/model/category.entity';
 // import { CreateCategoryDto } from './dto/create-category.dto';
 // import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -36,6 +35,17 @@ export class CategoryService {
       select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
       where: {
         slug,
+      },
+      relations: [],
+    });
+    return category;
+  }
+
+  async findById(id: number) {
+    const category = await this.categoryRepository.findOne({
+      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      where: {
+        id,
       },
       relations: [],
     });

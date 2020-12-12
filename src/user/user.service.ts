@@ -1,14 +1,11 @@
 import { LoggerService } from '@/common/logger.service';
 import { ConfigService } from '@/config/config.service';
-import { User } from '@/entity/user.entity';
+import { User, UserStatus } from '@/model/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  FindOptionsWhere,
-  FindOptionsWhereCondition,
-  Repository,
-} from 'typeorm';
+import { Repository } from 'typeorm';
 import { hashSync, compareSync } from 'bcrypt';
+import { ListResult } from '@/model/listresult.entity';
 
 @Injectable()
 export class UserService {
@@ -18,6 +15,16 @@ export class UserService {
     private readonly logger: LoggerService,
   ) {
     //
+  }
+
+  async all(): Promise<User[]> {
+    const users: User[] = await this.userRepository.find({
+      // select: { password: false },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+    return users;
   }
 
   verifyPassword(password: string, oldPwd: string) {
@@ -86,6 +93,18 @@ export class UserService {
       select,
       where,
     });
+    return user;
+  }
+
+  async findByName(name: string, status: UserStatus = UserStatus.active) {
+    const user = await this.userRepository.findOneOrFail({
+      where: {
+        name,
+        status,
+      },
+      // relations: ['category', 'user', 'content'],
+    });
+    user.url = user.url || '';
     return user;
   }
 }

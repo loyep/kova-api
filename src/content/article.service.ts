@@ -1,19 +1,11 @@
-import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Repository,
-  Like,
-  Not,
-  LessThan,
-  MoreThan,
-  FindOptionsRelation,
-} from 'typeorm';
-import { Article, ArticleStatus } from '@/entity/article.entity';
-import { ListResult } from '@/entity/listresult.entity';
+import { Repository, Not, LessThan, MoreThan } from 'typeorm';
+import { Article, ArticleStatus } from '@/model/article.entity';
+import { ListResult } from '@/model/listresult.entity';
 import { MyHttpException } from '@/core/exception/my-http.exception';
 import { ErrorCode } from '@/constants/error';
-import { defaultMeta } from '@/entity/category.entity';
+import { defaultMeta } from '@/model/category.entity';
 
 @Injectable()
 export class ArticleService {
@@ -39,15 +31,6 @@ export class ArticleService {
     pageSize: number,
   ): Promise<ListResult<Article>> {
     const [list, count] = await this.articleRepository.findAndCount({
-      select: {
-        // id: true,
-        // name: true,
-        // createdAt: true,
-        // summary: true,
-        // commentCount: true,
-        // likedCount: true,
-        // coverURL: true,
-      },
       where: {
         status: ArticleStatus.published,
       },
@@ -63,27 +46,19 @@ export class ArticleService {
         count,
         page,
         pageSize,
-      }
+      },
     };
   }
 
   async bannerList() {
     const data = await this.articleRepository.find({
-      select: {
-        // id: true,
-        // name: true,
-        // createdAt: true,
-        // summary: true,
-        // commentCount: true,
-        // likedCount: true,
-        // coverURL: true,
-      },
+      select: ['id'],
       where: {
         status: ArticleStatus.published,
       },
       take: 5,
       order: {
-        publishedAt: 'desc',
+        publishedAt: 'DESC',
       },
     });
     return data;
@@ -164,7 +139,8 @@ export class ArticleService {
 
     if (!article) {
       throw new MyHttpException({
-        errorCode: ErrorCode.ParamsError.CODE,
+        code: ErrorCode.ParamsError.CODE,
+        message: ErrorCode.ParamsError.MESSAGE,
       });
     }
     await this.articleRepository.manager.connection.transaction(

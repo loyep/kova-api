@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import { Topic } from '@/entity/topic.entity';
+import { Topic } from '@/model/topic.entity';
 
 @Injectable()
 export class TopicService {
@@ -19,5 +19,27 @@ export class TopicService {
       },
     } as any);
     return topics;
+  }
+
+  async findBySlug(slug: string) {
+    const category = await this.topicRepository.findOne({
+      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      where: {
+        slug,
+      },
+      relations: [],
+    });
+    return category;
+  }
+
+  async findById(id: number) {
+    const category = await this.topicRepository.findOne({
+      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      where: {
+        id,
+      },
+      relations: [],
+    });
+    return category;
   }
 }

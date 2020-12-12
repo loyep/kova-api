@@ -20,14 +20,14 @@ export class RegisterDto {
     {
       message: ErrorCode.InvalidPassword.MESSAGE,
       context: {
-        errorCode: ErrorCode.InvalidPassword.CODE,
+        code: ErrorCode.InvalidPassword.CODE,
       },
     },
   )
   @IsString({
     message: ErrorCode.InvalidPassword.MESSAGE,
     context: {
-      errorCode: ErrorCode.InvalidPassword.CODE,
+      code: ErrorCode.InvalidPassword.CODE,
     },
   })
   readonly password: string;

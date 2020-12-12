@@ -1,11 +1,14 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigService } from './config/config.service';
-import { ConfigModule } from './config/config.module';
-import { CommonModule } from './common/common.module';
-import { UserModule } from './user/user.module';
+import { ConfigModule, ConfigService } from './config';
+import { CommonModule } from './common';
+import { UserModule } from './user';
 import { UserMiddleware } from './core/middleware/user.middleware';
-import { ContentModule } from './content/content.module';
+import { ContentModule } from './content';
+import { CacheModule } from './cache';
+import { AppController } from './app.controller';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -20,8 +23,11 @@ import { ContentModule } from './content/content.module';
     }),
     CommonModule,
     ContentModule,
+    CacheModule,
     UserModule,
+    TerminusModule,
   ],
+  controllers: [AppController, HealthController],
 })
 export class AppModule {
   constructor(private readonly configService: ConfigService) {}

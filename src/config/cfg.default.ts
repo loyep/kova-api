@@ -18,7 +18,7 @@ export default {
     password: '',
     database: 'mili',
     synchronize: false,
-    entities: [path.join(__dirname, '../entity/**/*.entity{.ts,.js}')],
+    entities: [path.join(__dirname, '../model/**/*.entity{.ts,.js}')],
     logging: 'all', // query, error, schema, warn, info, log, all
     logger: 'simple-console',
     maxQueryExecutionTime: 500, // 单位毫秒

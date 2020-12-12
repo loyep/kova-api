@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import { Tag } from '@/entity/tag.entity';
+import { Tag } from '@/model/tag.entity';
 
 @Injectable()
 export class TagService {
@@ -19,5 +19,38 @@ export class TagService {
       },
     } as any);
     return tags;
+  }
+
+  async findBySlug(slug: string) {
+    const tag = await this.tagRepository.findOne({
+      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      where: {
+        slug,
+      },
+      relations: [],
+    });
+    return tag;
+  }
+
+  async findBySlugOrFail(slug: string) {
+    const tag = await this.tagRepository.findOneOrFail({
+      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      where: {
+        slug,
+      },
+      relations: [],
+    });
+    return tag;
+  }
+
+  async findById(id: number) {
+    const tag = await this.tagRepository.findOne({
+      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      where: {
+        id,
+      },
+      relations: [],
+    });
+    return tag;
   }
 }

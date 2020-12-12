@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
 import { CategoryService } from './category.service';
-import { APIPrefix } from '@/constants/constants';
+import { AdminAPIPrefix, APIPrefix } from '@/constants/constants';
 import { ErrorCode } from '@/constants/error';
 
 @Controller()
@@ -28,12 +28,22 @@ export class CategoryController {
     return await this.categoryService.all();
   }
 
-  @Get(`${APIPrefix}/category/:slug`)
-  async getBySlug(@Param('slug') slug: string, @Res() res) {
+  @Get(`${APIPrefix}/categories/:slug`)
+  async showBySlug(@Param('slug') slug: string, @Res() res) {
     const category = await this.categoryService.findBySlug(slug);
 
     return res.json({
-      errorCode: ErrorCode.SUCCESS.CODE,
+      code: ErrorCode.SUCCESS.CODE,
+      data: category,
+    });
+  }
+
+  @Get(`${AdminAPIPrefix}/categories/:id`)
+  async show(@Param('id') id: number, @Res() res) {
+    const category = await this.categoryService.findById(id);
+
+    return res.json({
+      code: ErrorCode.SUCCESS.CODE,
       data: category,
     });
   }

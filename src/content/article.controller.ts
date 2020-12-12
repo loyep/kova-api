@@ -1,17 +1,6 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Put,
-  UseGuards,
-  Get,
-  Query,
-  Param,
-  Res,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Get, Query, Param, Res } from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
-import { Article } from '@/entity/article.entity';
+import { Article } from '@/model/article.entity';
 import { ArticleService } from './article.service';
 import { APIPrefix } from '@/constants/constants';
 import { ParsePagePipe } from '@/core/pipes/parse-page.pipe';
@@ -27,12 +16,12 @@ export class ArticleController {
     private readonly articleService: ArticleService,
   ) {}
 
-  @Get('/p/:slug')
-  async getPost(@Param('slug') slug: string, @Res() res) {
-    return;
+  @Get('/')
+  async index() {
+    return 'hello world';
   }
 
-  async all() {
+  async getAll() {
     const articles: Article[] = await this.articleService.all();
     return articles;
   }
@@ -57,7 +46,7 @@ export class ArticleController {
     });
   }
 
-  @Get(`${APIPrefix}/article/:slug`)
+  @Get(`${APIPrefix}/articles/:slug`)
   async getBySlug(@Param('slug') slug: string, @Res() res) {
     const article = await this.articleService.findBySlug(slug);
     try {
@@ -67,9 +56,8 @@ export class ArticleController {
       );
       article.prev = prev;
       article.next = next;
-
       return res.json({
-        errorCode: ErrorCode.SUCCESS.CODE,
+        code: ErrorCode.SUCCESS.CODE,
         data: {
           ...article,
           related: [],
@@ -80,7 +68,8 @@ export class ArticleController {
       });
     } catch (error) {
       throw new MyHttpException({
-        errorCode: ErrorCode.NotFound.CODE,
+        code: ErrorCode.NotFound.CODE,
+        message: ErrorCode.NotFound.MESSAGE,
       });
     }
   }
@@ -99,7 +88,7 @@ export class ArticleController {
     const data = await this.articleService.list(sort, order, page, pageSize);
 
     return res.json({
-      errorCode: ErrorCode.SUCCESS.CODE,
+      code: ErrorCode.SUCCESS.CODE,
       data,
     });
   }
