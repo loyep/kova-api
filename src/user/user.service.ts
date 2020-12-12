@@ -1,11 +1,9 @@
 import { LoggerService } from '@/common/logger.service';
-import { ConfigService } from '@/config/config.service';
 import { User, UserStatus } from '@/model/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { hashSync, compareSync } from 'bcrypt';
-import { ListResult } from '@/model/listresult.entity';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {

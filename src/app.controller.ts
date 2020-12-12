@@ -1,5 +1,4 @@
 import { APIPrefix } from '@/constants/constants';
-// import { User } from '@/model/user.entity';
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from './config/config.service';
 

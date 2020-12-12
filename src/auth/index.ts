@@ -1,5 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { Module } from '@nestjs/common';
 import { UserModule } from '@/user';
 
 @Module({

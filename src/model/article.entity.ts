@@ -20,11 +20,13 @@ export interface ArticleMeta {
   background: string;
 }
 
-export const defaultMeta: ArticleMeta = {
-  cover: '',
-  background: '',
-  color: '',
-};
+export function defaultMeta(): ArticleMeta {
+  return {
+    cover: '',
+    background: '',
+    color: '',
+  };
+}
 
 export enum ArticleStatus {
   published = 'published',

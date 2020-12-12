@@ -1,16 +1,4 @@
-import * as util from 'util';
-import {
-  Controller,
-  Post,
-  Body,
-  Put,
-  UseGuards,
-  Get,
-  Query,
-  Param,
-  Res,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
 import { CategoryService } from './category.service';
 import { AdminAPIPrefix, APIPrefix } from '@/constants/constants';
@@ -24,7 +12,7 @@ export class CategoryController {
   ) {}
 
   @Get(`${APIPrefix}/categories`)
-  async all(query: any = {}, page: number, pageSize: number) {
+  async all() {
     return await this.categoryService.all();
   }
 
