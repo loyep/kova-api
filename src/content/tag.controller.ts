@@ -1,6 +1,6 @@
 import { APIPrefix, AdminAPIPrefix } from '../constants/constants';
 import { Controller, Get, Query, Param, Res, Delete } from '@nestjs/common';
-import { Category } from '@/model/category.entity';
+import { Category } from '@/entity/category.entity';
 import { TagService } from './tag.service';
 
 @Controller()

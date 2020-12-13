@@ -2,7 +2,7 @@ import { Controller, Get, Param, Res } from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
 import { TopicService } from './topic.service';
 import { AdminAPIPrefix, APIPrefix } from '@/constants/constants';
-import { Topic } from '@/model/topic.entity';
+import { Topic } from '@/entity/topic.entity';
 import { ErrorCode } from '@/constants/error';
 
 @Controller()

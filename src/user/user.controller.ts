@@ -2,7 +2,6 @@ import { APIPrefix } from '@/constants/constants';
 import { ErrorCode } from '@/constants/error';
 import { CurUser } from '@/core/decorators/user.decorator';
 import { MyHttpException } from '@/core/exception/my-http.exception';
-// import { User } from '@/model/user.entity';
 import { Controller, Post, Body, Get, Res, Req, Param } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
 import { UserService } from './user.service';

@@ -1,5 +1,5 @@
 import { LoggerService } from '@/common/logger.service';
-import { User, UserStatus } from '@/model/user.entity';
+import { User, UserStatus } from '@/entity/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

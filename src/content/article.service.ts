@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not, LessThan, MoreThan } from 'typeorm';
-import { Article, ArticleStatus } from '@/model/article.entity';
-import { ListResult } from '@/model/listresult.entity';
+import { Article, ArticleStatus } from '@/entity/article.entity';
+import { ListResult } from '@/entity/listresult.entity';
 import { MyHttpException } from '@/core/exception/my-http.exception';
 import { ErrorCode } from '@/constants/error';
-import { defaultMeta } from '@/model/category.entity';
+import { defaultMeta } from '@/entity/category.entity';
 
 @Injectable()
 export class ArticleService {

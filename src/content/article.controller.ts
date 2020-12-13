@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
-import { Article } from '@/model/article.entity';
+import { Article } from '@/entity/article.entity';
 import { ArticleService } from './article.service';
 import { APIPrefix } from '@/constants/constants';
 import { ParsePagePipe } from '@/core/pipes/parse-page.pipe';

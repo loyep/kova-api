@@ -7,7 +7,6 @@ import {
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 import { APIPrefix } from '@/constants/constants';
-// import { User } from '@/model/user.entity';
 import { Controller, Get, Res } from '@nestjs/common';
 import { ErrorCode } from './constants/error';
 import { MyHttpException } from './core/exception/my-http.exception';
