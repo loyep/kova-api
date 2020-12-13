@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Query, Param, Res } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Query,
+  Param,
+  Res,
+  Delete,
+} from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
 import { Article } from '@/model/article.entity';
 import { ArticleService } from './article.service';
@@ -16,11 +24,6 @@ export class ArticleController {
     private readonly articleService: ArticleService,
   ) {}
 
-  @Get('/')
-  async index() {
-    return 'hello world';
-  }
-
   async getAll() {
     const articles: Article[] = await this.articleService.all();
     return articles;
@@ -32,13 +35,13 @@ export class ArticleController {
     return {};
   }
 
-  @Post(`${APIPrefix}/articles/:id/unlike`)
+  @Delete(`${APIPrefix}/articles/:id/like`)
   async cancelLike(@CurUser() user, @Param('id', MustIntPipe) id: number) {
     await this.articleService.likeOrCancelLike(id, user.id);
     return {};
   }
 
-  @Get(`${APIPrefix}/banner`)
+  @Get(`${APIPrefix}/banners`)
   async banner(@Res() res) {
     const data = await this.articleService.bannerList();
     return res.json({
