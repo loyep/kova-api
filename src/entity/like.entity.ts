@@ -1,12 +1,18 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'follows' })
-export class Follow {
+@Entity({ name: 'likes' })
+export class Like {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
   @Column('varchar', { nullable: true, default: null })
   type: string;
+
+  @Column('bigint', { unsigned: true })
+  article_id: number;
+
+  @Column('bigint', { unsigned: true })
+  user_id: number;
 
   @Column('datetime', { name: 'created_at' })
   createdAt: Date;
