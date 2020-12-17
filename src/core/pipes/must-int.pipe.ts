@@ -1,14 +1,7 @@
-import {
-  PipeTransform,
-  Injectable,
-  ArgumentMetadata,
-  HttpException,
-  HttpStatus,
-  Paramtype,
-} from '@nestjs/common';
+import { PipeTransform, Injectable, ArgumentMetadata, HttpException, HttpStatus, Paramtype } from '@nestjs/common';
 import { ConfigService } from '@/config/config.service';
 import { ErrorCode } from '@/constants/error';
-import { MyHttpException } from '../exception/my-http.exception';
+import { MyHttpException } from '../exceptions/my-http.exception';
 
 @Injectable()
 export class MustIntPipe implements PipeTransform<string, number> {

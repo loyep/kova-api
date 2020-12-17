@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Topic } from '@/entity/topic.entity';
+
+export const TopicNotFound = new NotFoundException('未找到专题');
 
 @Injectable()
 export class TopicService {
@@ -33,7 +35,7 @@ export class TopicService {
   }
 
   async findById(id: number) {
-    const category = await this.topicRepository.findOne({
+    const category = await this.topicRepository.findOneOrFail({
       select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
       where: {
         id,

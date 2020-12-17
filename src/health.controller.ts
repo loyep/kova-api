@@ -9,7 +9,7 @@ import {
 import { APIPrefix } from '@/constants/constants';
 import { Controller, Get, Res } from '@nestjs/common';
 import { ErrorCode } from './constants/error';
-import { MyHttpException } from './core/exception/my-http.exception';
+import { MyHttpException } from './core/exceptions/my-http.exception';
 
 @Controller()
 export class HealthController {
@@ -23,18 +23,14 @@ export class HealthController {
 
   @Get(`${APIPrefix}/health/ready`)
   @HealthCheck()
-  async readiness(@Res() res) {
+  async readiness() {
     const { status, details, error } = await this.health.check([
       () => this.memory.checkHeap('memory_heap', 200 * 1024 * 1024),
       () => this.memory.checkRSS('memory_rss', 3000 * 1024 * 1024),
-      () =>
-        this.disk.checkStorage('storage', { thresholdPercent: 0.8, path: '/' }),
+      () => this.disk.checkStorage('storage', { thresholdPercent: 0.8, path: '/' }),
     ]);
     if (status === 'ok') {
-      return res.json({
-        code: ErrorCode.SUCCESS.CODE,
-        data: details,
-      });
+      return details;
     } else {
       throw new MyHttpException({
         code: ErrorCode.ERROR.CODE,

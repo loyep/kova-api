@@ -1,8 +1,4 @@
-import {
-  CacheModuleOptions,
-  CacheOptionsFactory,
-  Injectable,
-} from '@nestjs/common';
+import { CacheModuleOptions, CacheOptionsFactory, Injectable } from '@nestjs/common';
 
 // REf: https://github.com/kyle-mccarthy/nest-next-starter/tree/master/src/cache
 @Injectable()

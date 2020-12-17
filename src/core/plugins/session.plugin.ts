@@ -7,7 +7,7 @@ export const sessionPlugin = (_app?: INestApplication) => {
   const fileStore = new FileStore({
     path: './storage/sessions',
   });
-  const sessionPlugin = session({
+  const plugin = session({
     secret: 'kova',
     name: 'kova_session',
     cookie: { maxAge: 60000 * 60 * 1200, domain: '.loyep.com' },
@@ -16,5 +16,5 @@ export const sessionPlugin = (_app?: INestApplication) => {
     saveUninitialized: true,
     store: fileStore,
   });
-  return sessionPlugin;
+  return plugin;
 };

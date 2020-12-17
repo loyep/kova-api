@@ -1,7 +1,4 @@
-import * as pino from 'pino';
-import * as moment from 'moment';
-
-const logger = pino();
+import { Logger } from '@nestjs/common';
 
 class LogData {
   public message?: string;
@@ -9,10 +6,13 @@ class LogData {
 }
 
 export class LoggerService {
+  private readonly logger = new Logger('LoggerService', true);
+
   private writeLog(logMethod: string, logData: LogData) {
     logData = logData || { message: '', data: {} };
-    (logData as any).timeLocal = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
-    logger[logMethod](logData);
+    // (logData as any).timeLocal = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
+    // logger[logMethod](logData);
+    this.logger.log(typeof logData === 'object' ? JSON.stringify(logData) : logData);
   }
 
   debug(logData: LogData) {

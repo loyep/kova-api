@@ -42,8 +42,6 @@ export class AppModule {
       // SessionMiddleware,
       UserMiddleware,
     ];
-    consumer
-      .apply(...middlewares)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+    consumer.apply(...middlewares).forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

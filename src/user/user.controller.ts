@@ -1,8 +1,7 @@
 import { APIPrefix } from '@/constants/constants';
 import { ErrorCode } from '@/constants/error';
-import { CurUser } from '@/core/decorators/user.decorator';
-import { MyHttpException } from '@/core/exception/my-http.exception';
-import { Controller, Post, Body, Get, Res, Req, Param } from '@nestjs/common';
+import { MyHttpException } from '@/core/exceptions/my-http.exception';
+import { Controller, Get, Res, Param } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
 import { UserService } from './user.service';
 
@@ -14,22 +13,16 @@ export class UserController {
   ) {}
 
   @Get(`${APIPrefix}/users`)
-  async getAll(@Res() res) {
-    const user = await this.userService.all();
-    return res.json({
-      code: ErrorCode.SUCCESS.CODE,
-      data: user,
-    });
+  async getAll() {
+    const users = await this.userService.all();
+    return users;
   }
 
   @Get(`${APIPrefix}/users/:name`)
-  async getByName(@Param('name') name: string, @Res() res) {
+  async getByName(@Param('name') name: string) {
     try {
       const user = await this.userService.findByName(name);
-      return res.json({
-        code: ErrorCode.SUCCESS.CODE,
-        data: user,
-      });
+      return user;
     } catch (error) {
       throw new MyHttpException({
         code: ErrorCode.NotFound.CODE,

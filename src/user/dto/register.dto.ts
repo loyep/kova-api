@@ -1,4 +1,4 @@
-import { MinLength, IsString, Length, IsEnum } from 'class-validator';
+import { MinLength, IsString, Length } from 'class-validator';
 import { ErrorCode } from '@/constants/error';
 import { UserConstants } from '@/constants/constants';
 
@@ -14,16 +14,12 @@ export class RegisterDto {
   @IsString()
   readonly username: string;
 
-  @Length(
-    UserConstants.PASSWORD_MIN_LENGTH,
-    UserConstants.PASSWORD_MAX_LENGTH,
-    {
-      message: ErrorCode.InvalidPassword.MESSAGE,
-      context: {
-        code: ErrorCode.InvalidPassword.CODE,
-      },
+  @Length(UserConstants.PASSWORD_MIN_LENGTH, UserConstants.PASSWORD_MAX_LENGTH, {
+    message: ErrorCode.InvalidPassword.MESSAGE,
+    context: {
+      code: ErrorCode.InvalidPassword.CODE,
     },
-  )
+  })
   @IsString({
     message: ErrorCode.InvalidPassword.MESSAGE,
     context: {
@@ -31,27 +27,4 @@ export class RegisterDto {
     },
   })
   readonly password: string;
-
-  // @IsEnum(LoginVerifyType, {
-  //   message: '无效的登录方式',
-  // })
-  // readonly verifyType: string;
-
-  // @MinLength(1, {
-  //   message: 'geetest_challenge不能为空',
-  // })
-  // @IsString()
-  // readonly geetest_challenge: string;
-
-  // @MinLength(1, {
-  //   message: 'geetest_validate不能为空',
-  // })
-  // @IsString()
-  // readonly geetest_validate: string;
-
-  // @MinLength(1, {
-  //   message: 'geetest_seccode不能为空',
-  // })
-  // @IsString()
-  // readonly geetest_seccode: string;
 }

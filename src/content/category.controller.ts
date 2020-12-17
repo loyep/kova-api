@@ -1,14 +1,14 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
-import { ConfigService } from '@/config/config.service';
-import { CategoryService } from './category.service';
+import { CategoryNotFound, CategoryService } from './category.service';
 import { AdminAPIPrefix, APIPrefix } from '@/constants/constants';
 import { ErrorCode } from '@/constants/error';
+import { LoggerService } from '@/common/logger.service';
 
 @Controller()
 export class CategoryController {
   constructor(
-    private readonly configService: ConfigService,
     private readonly categoryService: CategoryService,
+    private readonly logger: LoggerService,
   ) {}
 
   @Get(`${APIPrefix}/categories`)
@@ -17,22 +17,21 @@ export class CategoryController {
   }
 
   @Get(`${APIPrefix}/categories/:slug`)
-  async showBySlug(@Param('slug') slug: string, @Res() res) {
-    const category = await this.categoryService.findBySlug(slug);
-
-    return res.json({
-      code: ErrorCode.SUCCESS.CODE,
-      data: category,
-    });
+  async showBySlug(@Param('slug') slug: string) {
+    try {
+      const category = await this.categoryService.findBySlug(slug);
+      if (!category) {
+        throw CategoryNotFound;
+      }
+      return category;
+    } catch (error) {
+      throw CategoryNotFound;
+    }
   }
 
   @Get(`${AdminAPIPrefix}/categories/:id`)
-  async show(@Param('id') id: number, @Res() res) {
+  async show(@Param('id') id: number) {
     const category = await this.categoryService.findById(id);
-
-    return res.json({
-      code: ErrorCode.SUCCESS.CODE,
-      data: category,
-    });
+    return category;
   }
 }

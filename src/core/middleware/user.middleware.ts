@@ -1,8 +1,5 @@
-import * as url from 'url';
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { LoggerService } from '@/common/logger.service';
 import { UserService } from '@/user/user.service';
-import { User } from '@/entity/user.entity';
 
 @Injectable()
 export class UserMiddleware implements NestMiddleware {

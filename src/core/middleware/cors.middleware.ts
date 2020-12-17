@@ -13,15 +13,10 @@ export class CorsMiddleware implements NestMiddleware {
     const req: any = request;
     const res: any = response;
 
-    if (
-      this.configService.server.allowOrigins.indexOf(req.headers.origin) >= 0
-    ) {
+    if (this.configService.server.allowOrigins.indexOf(req.headers.origin) >= 0) {
       res.header('Access-Control-Allow-Origin', req.headers.origin);
     }
-    res.header(
-      'Access-Control-Allow-Methods',
-      'OPTIONS,HEAD,PUT,POST,GET,DELETE',
-    );
+    res.header('Access-Control-Allow-Methods', 'OPTIONS,HEAD,PUT,POST,GET,DELETE');
     next();
   }
 }

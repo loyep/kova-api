@@ -1,9 +1,4 @@
-import {
-  CACHE_MANAGER,
-  CacheManagerOptions,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { CACHE_MANAGER, CacheManagerOptions, Inject, Injectable } from '@nestjs/common';
 
 export interface ICacheManager {
   store?: any;

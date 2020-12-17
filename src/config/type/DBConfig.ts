@@ -12,12 +12,7 @@ export default class DBConfig extends BaseConfig {
   readonly entities: string[];
   readonly synchronize: boolean;
   readonly logging: LoggerOptions;
-  readonly logger:
-    | 'advanced-console'
-    | 'simple-console'
-    | 'file'
-    | 'debug'
-    | Logger;
+  readonly logger: 'advanced-console' | 'simple-console' | 'file' | 'debug' | Logger;
   // If query execution time exceed this given max execution time (in milliseconds) then logger will log this query.
   readonly maxQueryExecutionTime: number;
 

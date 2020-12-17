@@ -1,19 +1,17 @@
+import { LoggerService } from '@/common/logger.service';
 import { APIPrefix } from '@/constants/constants';
 import { ErrorCode } from '@/constants/error';
 import { CurUser } from '@/core/decorators/user.decorator';
-import { MyHttpException } from '@/core/exception/my-http.exception';
-import { Controller, Post, Body, Get, Res, Req } from '@nestjs/common';
-import { ConfigService } from '../config/config.service';
+import { MyHttpException } from '@/core/exceptions/my-http.exception';
+import { GuestGuard } from '@/core/guards/guest.guard';
+import { Controller, Post, Body, Get, Res, Req, UseGuards } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from './user.service';
 
 @Controller()
 export class AuthController {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userService: UserService, private readonly logger: LoggerService) {}
 
   @Post(`${APIPrefix}/login`)
   async login(@Body() loginDto: LoginDto, @Req() req, @Res() res) {
@@ -23,10 +21,7 @@ export class AuthController {
       },
       { id: true, password: true },
     );
-    if (
-      !user ||
-      !this.userService.verifyPassword(loginDto.password, user.password)
-    ) {
+    if (!user || !this.userService.verifyPassword(loginDto.password, user.password)) {
       throw new MyHttpException({
         code: ErrorCode.ParamsError.CODE,
         message: '账号或密码不正确',
@@ -42,17 +37,14 @@ export class AuthController {
   }
 
   @Post(`${APIPrefix}/register`)
-  async register(@Body() registerDto: RegisterDto, @Req() req, @Res() res) {
+  async register(@Body() registerDto: RegisterDto, @Req() req) {
     const user = await this.userService.findUser(
       {
         name: registerDto.username,
       },
       { id: true, password: true },
     );
-    if (
-      !user ||
-      !this.userService.verifyPassword(registerDto.password, user.password)
-    ) {
+    if (!user || !this.userService.verifyPassword(registerDto.password, user.password)) {
       throw new MyHttpException({
         code: ErrorCode.ParamsError.CODE,
         message: '账号或密码不正确',
@@ -60,17 +52,17 @@ export class AuthController {
     }
     const curUser = await this.userService.getUser(user.id);
     req.session.userId = user.id;
-    return res.json({
-      code: ErrorCode.SUCCESS.CODE,
+    return {
       user: curUser,
-    });
+    };
   }
 
   @Post(`${APIPrefix}/logout`)
+  @UseGuards(GuestGuard)
   async logout(@Req() req, @Res() res) {
     req.session.userId = null;
-    req.session.destroy(function (err) {
-      /*销毁session*/
+    req.session.destroy(() => {
+      this.logger.info({ message: 'user logout' });
     });
     res.json({
       code: ErrorCode.SUCCESS.CODE,
@@ -95,12 +87,9 @@ export class AuthController {
   }
 
   @Get(`${APIPrefix}/profile`)
-  async profile(@CurUser() user, @Res() res) {
+  async profile(@CurUser() user) {
     if (user) {
-      return res.json({
-        code: ErrorCode.SUCCESS.CODE,
-        user: user,
-      });
+      return user;
     }
     throw new MyHttpException({
       code: ErrorCode.Forbidden.CODE,
@@ -109,10 +98,7 @@ export class AuthController {
   }
 
   @Get(`${APIPrefix}/curUser`)
-  async user(@CurUser() user, @Res() res) {
-    return res.json({
-      code: ErrorCode.SUCCESS.CODE,
-      user: user || null,
-    });
+  async user(@CurUser() user) {
+    return user || null;
   }
 }

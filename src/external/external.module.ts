@@ -1,4 +1,4 @@
-import { forwardRef, HttpModule, Module, CacheModule } from '@nestjs/common';
+import { HttpModule, Module, CacheModule } from '@nestjs/common';
 
 @Module({
   imports: [
@@ -9,4 +9,4 @@ import { forwardRef, HttpModule, Module, CacheModule } from '@nestjs/common';
     }),
   ],
 })
-export class ExternalModule { }
+export class ExternalModule {}
