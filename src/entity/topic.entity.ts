@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'topics' })
 export class Topic {
@@ -20,17 +20,12 @@ export class Topic {
   @Column('bigint', { name: 'articles_count', unsigned: true, default: 0 })
   articlesCount: number;
 
-  @Column('datetime', { name: 'created_at', select: false })
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', { name: 'updated_at', select: false })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  @Column('datetime', {
-    name: 'deleted_at',
-    nullable: true,
-    default: null,
-    select: false,
-  })
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }

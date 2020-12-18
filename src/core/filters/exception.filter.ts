@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { MyHttpException } from '../exceptions/my-http.exception';
 import {} from '@nestjs/common';
-import { IsString } from 'class-validator';
 import { isString } from 'lodash';
 
 @Catch()

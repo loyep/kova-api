@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { Article } from './article.entity';
 
 export interface UserMeta {
@@ -19,7 +27,12 @@ export enum UserStatus {
   frozen = 'frozen',
 }
 
-@Entity({ name: 'users' })
+@Entity({
+  name: 'users',
+  orderBy: {
+    updatedAt: 'DESC',
+  },
+})
 export class User {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
@@ -68,18 +81,13 @@ export class User {
   @Column('datetime', { name: 'logged_at', nullable: true, default: null })
   loggedAt: Date;
 
-  @Column('datetime', { name: 'created_at', select: false })
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', { name: 'updated_at', select: false })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  @Column('datetime', {
-    name: 'deleted_at',
-    nullable: true,
-    default: null,
-    select: false,
-  })
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 
   @OneToMany(() => Article, (article: Article) => article.user)

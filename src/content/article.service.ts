@@ -24,7 +24,7 @@ export class ArticleService {
     return articles;
   }
 
-  async listByUserId(
+  listByUserId(
     userId: number,
     {
       page,
@@ -34,7 +34,7 @@ export class ArticleService {
       pageSize?: number;
     },
   ) {
-    return await this.list({ userId, page, pageSize });
+    return this.list({ userId, page, pageSize });
   }
 
   // 创建文章

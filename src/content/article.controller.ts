@@ -39,6 +39,12 @@ export class ArticleController {
     return {};
   }
 
+  @Get(`${APIPrefix}/users/:id/article`)
+  async getArticleByUserId(@Param('id') id: number, @Query('page', ParsePagePipe) page: number) {
+    const data = await this.articleService.listByUserId(id, { page });
+    return data;
+  }
+
   @Get(`${APIPrefix}/banners`)
   async banner() {
     const data = await this.articleService.bannerList();

@@ -1,21 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'roles' })
 export class Role {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
-  @Column('datetime', { name: 'created_at', select: false })
+  @Column('varchar')
+  name: string;
+
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', { name: 'updated_at', select: false })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  @Column('datetime', {
-    name: 'deleted_at',
-    nullable: true,
-    default: null,
-    select: false,
-  })
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }

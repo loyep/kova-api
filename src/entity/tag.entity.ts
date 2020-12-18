@@ -1,4 +1,12 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Article } from './article.entity';
 
 export interface TagMeta {
@@ -36,26 +44,13 @@ export class Tag {
   @Column('bigint', { name: 'articles_count', unsigned: true, default: 0 })
   articlesCount: number;
 
-  @Column('datetime', {
-    name: 'created_at',
-    default: () => 'NOW()',
-    select: false,
-  })
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', {
-    name: 'updated_at',
-    default: () => 'NOW()',
-    select: false,
-  })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  @Column('datetime', {
-    name: 'deleted_at',
-    nullable: true,
-    default: null,
-    select: false,
-  })
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 
   @ManyToMany(() => Article, (article: Article) => article.tags)

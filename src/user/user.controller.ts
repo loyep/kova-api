@@ -3,35 +3,19 @@ import { ErrorCode } from '@/constants/error';
 import { ArticleService } from '@/content';
 import { MyHttpException } from '@/core/exceptions/my-http.exception';
 import { ParsePagePipe } from '@/core/pipes/parse-page.pipe';
-import { Controller, Get, Res, Param, Query } from '@nestjs/common';
-import { ConfigService } from '../config/config.service';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly userService: UserService,
-    private readonly articleService: ArticleService,
-  ) {}
+  constructor(private readonly userService: UserService, private readonly articleService: ArticleService) {}
 
-  @Get(`${APIPrefix}/users`)
-  async getAll() {
-    const users = await this.userService.all();
-    return users;
-  }
-
-  @Get(`${APIPrefix}/users/:id/article`)
-  async getArticleByUserId(@Param('id') id: number, @Query('page', ParsePagePipe) page: number) {
-    try {
-      const user = await this.articleService.listByUserId(id, { page });
-      return user;
-    } catch (error) {
-      throw new MyHttpException({
-        code: ErrorCode.NotFound.CODE,
-        message: ErrorCode.NotFound.MESSAGE,
-      });
-    }
+  @ApiOperation({ summary: '用户列表', tags: ['user'] })
+  @Get(`${APIPrefix}/categories`)
+  async list(@Query('s') s: string, @Query('page', ParsePagePipe) page: number) {
+    const data = await this.userService.list({ page });
+    return data;
   }
 
   @Get(`${APIPrefix}/users/:name`)

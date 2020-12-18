@@ -4,20 +4,36 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { compareSync } from 'bcrypt';
+import { ListResult } from '@/entity/listresult.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly repo: Repository<User>,
     private readonly logger: LoggerService,
   ) {
     //
   }
 
+  async list({ page, pageSize = 20 }: { page: number; pageSize?: number }): Promise<ListResult<User>> {
+    const [list, count] = await this.repo.findAndCount({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    return {
+      list,
+      meta: {
+        count,
+        page,
+        pageSize,
+        totalPage: Math.ceil(count / pageSize),
+      },
+    };
+  }
+
   async all(): Promise<User[]> {
-    const users: User[] = await this.userRepository.find({
-      // select: { password: false },
+    const users: User[] = await this.repo.find({
       order: {
         createdAt: 'DESC',
       },
@@ -54,9 +70,8 @@ export class UserService {
         },
       });
 
-      // TODO: users 表增加 level 字段， 然后查出 level
       try {
-        user = await this.userRepository.findOne({
+        user = await this.repo.findOne({
           select: ['id', 'status', 'name', 'avatar', 'displayName', 'email'],
           where: {
             id,
@@ -87,7 +102,7 @@ export class UserService {
   }
 
   async findUser(where, select) {
-    const user = await this.userRepository.findOne({
+    const user = await this.repo.findOne({
       select,
       where,
     });
@@ -95,7 +110,7 @@ export class UserService {
   }
 
   async findByName(name: string, status: UserStatus = UserStatus.active) {
-    const user = await this.userRepository.findOneOrFail({
+    const user = await this.repo.findOneOrFail({
       where: {
         name,
         status,

@@ -1,5 +1,13 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  UpdateDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { Article } from './article.entity';
 
 export interface CategoryMeta {
@@ -44,18 +52,13 @@ export class Category {
   @Column('bigint', { name: 'articles_count', unsigned: true, default: 0 })
   articlesCount: number;
 
-  @Column('datetime', { name: 'created_at', select: false })
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', { name: 'updated_at', select: false })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  @Column('datetime', {
-    name: 'deleted_at',
-    nullable: true,
-    default: null,
-    select: false,
-  })
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 
   @OneToMany(() => Article, (article: Article) => article.category)

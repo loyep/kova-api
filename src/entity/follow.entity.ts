@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'follows' })
 export class Follow {
@@ -8,12 +8,12 @@ export class Follow {
   @Column('varchar', { nullable: true, default: null })
   type: string;
 
-  @Column('datetime', { name: 'created_at' })
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', { name: 'updated_at' })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }

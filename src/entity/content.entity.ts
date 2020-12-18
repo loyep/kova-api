@@ -1,4 +1,13 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  UpdateDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { Article } from './article.entity';
 
 @Entity({ name: 'contents' })
@@ -22,12 +31,12 @@ export class Content {
   @JoinColumn({ name: 'article_id' })
   article?: Article;
 
-  @Column('datetime', { name: 'created_at' })
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', { name: 'updated_at' })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
