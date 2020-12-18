@@ -13,12 +13,12 @@ export enum LikeType {
 export class LikeService {
   constructor(
     @InjectRepository(UserLike)
-    private readonly likeRepository: Repository<UserLike>,
+    private readonly repo: Repository<UserLike>,
     private readonly logger: LoggerService,
   ) {}
 
   async isLiked(likeId: number, userId: number, type = LikeType.Article): Promise<boolean> {
-    const count = await this.likeRepository.count({
+    const count = await this.repo.count({
       where: {
         like_id: likeId,
         user_id: userId,
@@ -38,7 +38,7 @@ export class LikeService {
         });
         return true;
       }
-      await this.likeRepository.save({
+      await this.repo.save({
         like_id: likeId,
         user_id: userId,
         type: type,
@@ -51,7 +51,7 @@ export class LikeService {
 
   async unLike(likeId: number, userId: number, type = LikeType.Article): Promise<boolean> {
     try {
-      await this.likeRepository.delete({
+      await this.repo.delete({
         like_id: likeId,
         user_id: userId,
         type: type,

@@ -1,3 +1,4 @@
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
 
@@ -13,12 +14,19 @@ export const defaultMeta: CategoryMeta = {
   color: '',
 };
 
-@Entity({ name: 'categories' })
+@Entity({
+  name: 'categories',
+  orderBy: {
+    id: 'DESC',
+  },
+})
 export class Category {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
   @Column('varchar')
+  @IsNotEmpty({ message: '分类名称？' })
+  @IsString({ message: '字符串？' })
   name: string;
 
   @Column('varchar', { unique: true })

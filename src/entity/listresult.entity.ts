@@ -4,5 +4,6 @@ export class ListResult<T> {
     count: number;
     page: number;
     pageSize: number;
+    totalPage: number;
   };
 }

@@ -88,13 +88,13 @@ export class AuthController {
 
   @Get(`${APIPrefix}/profile`)
   async profile(@CurUser() user) {
-    if (user) {
-      return user;
+    if (!user) {
+      throw new MyHttpException({
+        code: ErrorCode.Forbidden.CODE,
+        message: ErrorCode.Forbidden.MESSAGE,
+      });
     }
-    throw new MyHttpException({
-      code: ErrorCode.Forbidden.CODE,
-      message: ErrorCode.Forbidden.MESSAGE,
-    });
+    return user;
   }
 
   @Get(`${APIPrefix}/curUser`)

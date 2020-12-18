@@ -12,9 +12,10 @@ export class TransformInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const call$ = next.handle();
     return call$.pipe(
-      map((data: any) => {
-        data = classToPlain(data);
-        return { code: 0, data };
+      map((result: any) => {
+        result = classToPlain(result) || {};
+        const { data, message } = result;
+        return { code: 0, message: message || '成功', data: data ? data : result };
       }),
     );
   }

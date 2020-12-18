@@ -8,11 +8,14 @@ import {
   OneToOne,
   Index,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Category } from './category.entity';
 import { User } from './user.entity';
 import { Tag } from './tag.entity';
 import { Content } from './content.entity';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export interface ArticleMeta {
   cover: string;
@@ -49,11 +52,18 @@ export enum ArticleType {
   // logged = 'logged',
 }
 
-@Entity({ name: 'articles' })
+@Entity({
+  name: 'articles',
+  orderBy: {
+    publishedAt: 'DESC',
+  },
+})
 export class Article {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
+  @IsNotEmpty({ message: '文章标题？' })
+  @IsString({ message: '字符串？' })
   @Column('varchar', { nullable: true, default: null })
   @Index({ fulltext: true })
   title: string;
@@ -99,6 +109,7 @@ export class Article {
   likesCount: number;
 
   @Column('int', { name: 'comments_count', unsigned: true, default: 0 })
+  @Index()
   commentsCount: number;
 
   @Column('varchar', {
@@ -111,12 +122,13 @@ export class Article {
   password: string | null;
 
   @Column('datetime', { name: 'published_at', nullable: true, default: null })
+  @Index()
   publishedAt: Date | null;
 
-  @Column('datetime', { name: 'created_at', select: false })
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @Column('datetime', { name: 'updated_at', select: false })
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
   @Column('datetime', {
@@ -139,6 +151,7 @@ export class Article {
     default: null,
     select: false,
   })
+  @Index()
   categoryId: number;
 
   @ManyToOne(() => User, (user: User) => user.articles, {
@@ -153,6 +166,7 @@ export class Article {
     default: null,
     select: false,
   })
+  @Index()
   userId: number;
 
   prev: Article | null;

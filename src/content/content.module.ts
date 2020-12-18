@@ -24,10 +24,7 @@ import { TopicService } from './topic.service';
 import { LikeService } from './like.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Category, Tag, Article, Topic, UserLike]),
-    CommonModule,
-  ],
+  imports: [TypeOrmModule.forFeature([User, Category, Tag, Article, Topic, UserLike]), CommonModule],
   controllers: [CategoryController, TagController, ArticleController, TopicController],
   providers: [ArticleService, CategoryService, TagService, TopicService, LikeService],
   exports: [],

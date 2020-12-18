@@ -10,11 +10,11 @@ export const TopicNotFound = new NotFoundException('未找到专题');
 export class TopicService {
   constructor(
     @InjectRepository(Topic)
-    private readonly topicRepository: Repository<Topic>,
+    private readonly repo: Repository<Topic>,
   ) {}
 
   async all(): Promise<Topic[]> {
-    const topics: Topic[] = await this.topicRepository.find({
+    const topics: Topic[] = await this.repo.find({
       select: ['id', 'image', 'name', 'description', 'postsCount'],
       order: {
         createdAt: 'DESC',
@@ -24,7 +24,7 @@ export class TopicService {
   }
 
   async findBySlug(slug: string) {
-    const category = await this.topicRepository.findOne({
+    const category = await this.repo.findOne({
       select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
       where: {
         slug,
@@ -35,7 +35,7 @@ export class TopicService {
   }
 
   async findById(id: number) {
-    const category = await this.topicRepository.findOneOrFail({
+    const category = await this.repo.findOneOrFail({
       select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
       where: {
         id,

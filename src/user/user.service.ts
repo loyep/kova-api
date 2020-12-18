@@ -35,7 +35,7 @@ export class UserService {
   async getUser(id: number): Promise<User> {
     this.logger.info({
       data: {
-        thecodeline: 'this.redisService.getUser nvnsiwpwo ' + id,
+        thecodeline: 'this.redisService.getUser ' + id,
       },
     });
 
@@ -50,7 +50,7 @@ export class UserService {
     if (!user) {
       this.logger.info({
         data: {
-          thecodeline: 'this.userRepository.findOne irueghahs',
+          thecodeline: 'this.userRepository.findOne',
         },
       });
 
@@ -71,7 +71,7 @@ export class UserService {
 
       this.logger.info({
         data: {
-          thecodeline: 'this.redisService.setUser m97hejiriw',
+          thecodeline: 'this.redisService.setUser',
         },
       });
       // await this.redisService.setUser(user);
@@ -79,7 +79,7 @@ export class UserService {
 
     this.logger.info({
       data: {
-        thecodeline: '===> user.service.getUser done irir89',
+        thecodeline: '===> user.service.getUser done',
       },
     });
 

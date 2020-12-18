@@ -11,11 +11,11 @@ export const ArticleNotFound = new NotFoundException('未找到文章');
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
-    private readonly articleRepository: Repository<Article>,
+    private readonly repo: Repository<Article>,
   ) {}
 
   async all(): Promise<Article[]> {
-    const articles: Article[] = await this.articleRepository.find({
+    const articles: Article[] = await this.repo.find({
       select: ['id', 'image', 'name', 'description'],
       order: {
         createdAt: 'DESC',
@@ -24,15 +24,65 @@ export class ArticleService {
     return articles;
   }
 
-  async list(
-    sort: string,
-    order: 'DESC' | 'ASC' = 'DESC',
-    page: number,
-    pageSize: number,
-  ): Promise<ListResult<Article>> {
-    const [list, count] = await this.articleRepository.findAndCount({
+  async listByUserId(
+    userId: number,
+    {
+      page,
+      pageSize,
+    }: {
+      page: number;
+      pageSize?: number;
+    },
+  ) {
+    return await this.list({ userId, page, pageSize });
+  }
+
+  // 创建文章
+  // public async create(newArticle: Article): Promise<Article> {
+  //   const article = await this.repo.create({
+  //     ...newArticle,
+  //     meta: getDefaultMeta(),
+  //   });
+  //   this.seoService.push(getArticleUrl(article.id));
+  //   this.syndicationService.updateCache();
+  //   this.tagService.updateListCache();
+  //   return article;
+  // }
+
+  // // 修改文章
+  // public async update(articleId: Types.ObjectId, newArticle: Article): Promise<Article> {
+  //   // 修正信息
+  //   Reflect.deleteProperty(newArticle, 'meta');
+  //   Reflect.deleteProperty(newArticle, 'create_at');
+  //   Reflect.deleteProperty(newArticle, 'update_at');
+
+  //   const article = await this.articleModel.findByIdAndUpdate(articleId, newArticle, { new: true }).exec();
+  //   this.seoService.update(getArticleUrl(article.id));
+  //   this.syndicationService.updateCache();
+  //   this.tagService.updateListCache();
+  //   return article;
+  // }
+
+  async list({
+    sort = 'publishedAt',
+    page,
+    pageSize = 20,
+    order = 'DESC',
+    userId,
+    categoryId,
+  }: {
+    sort?: string;
+    order?: 'DESC' | 'ASC';
+    page: number;
+    userId?: number;
+    categoryId?: number;
+    pageSize?: number;
+  }): Promise<ListResult<Article>> {
+    const [list, count] = await this.repo.findAndCount({
       where: {
         status: ArticleStatus.published,
+        ...(userId ? { userId } : {}),
+        ...(categoryId ? { categoryId } : {}),
       },
       order: {
         [sort]: order,
@@ -46,12 +96,13 @@ export class ArticleService {
         count,
         page,
         pageSize,
+        totalPage: Math.ceil(count / pageSize),
       },
     };
   }
 
   async bannerList() {
-    const data = await this.articleRepository.find({
+    const data = await this.repo.find({
       select: ['id'],
       where: {
         status: ArticleStatus.published,
@@ -65,7 +116,7 @@ export class ArticleService {
   }
 
   async findBySlug(slug: string, status: ArticleStatus = ArticleStatus.published) {
-    const article = await this.articleRepository.findOneOrFail({
+    const article = await this.repo.findOneOrFail({
       where: {
         slug,
         status,
@@ -75,7 +126,25 @@ export class ArticleService {
 
     if (article && !article.meta) {
       article.meta = defaultMeta;
-      await this.articleRepository.save(article);
+      await this.repo.save(article);
+    } else {
+      article.meta = { ...defaultMeta, ...article.meta };
+    }
+    return article;
+  }
+
+  async findById(id: number, status: ArticleStatus = ArticleStatus.published) {
+    const article = await this.repo.findOneOrFail({
+      where: {
+        id,
+        status,
+      },
+      relations: ['category', 'user', 'content'],
+    });
+
+    if (article && !article.meta) {
+      article.meta = defaultMeta;
+      await this.repo.save(article);
     } else {
       article.meta = { ...defaultMeta, ...article.meta };
     }
@@ -84,38 +153,31 @@ export class ArticleService {
 
   // 创建文章
   async create(newArticle: Article): Promise<Article> {
-    const article = await this.articleRepository.save({
+    const article = await this.repo.save({
       ...newArticle,
       meta: defaultMeta,
     });
-    return article;
+    return await this.repo.findOne(article.id);
   }
 
   // 更新文章
-  public async update(articleId: number, newArticle: Article): Promise<Article> {
-    newArticle.id = articleId;
-    const article = await this.articleRepository.save(newArticle);
-    // this.seoService.update(getArticleUrl(article.id));
-    // this.syndicationService.updateCache();
-    // this.tagService.updateListCache();
-    return article;
-  }
-
-  async isUserLiked(articleId: number, userID: number): Promise<boolean> {
-    const sql = `SELECT article_id, user_id FROM like_articles
-        WHERE article_id = ${articleId} AND user_id = ${userID}`;
-    let result = await this.articleRepository.manager.query(sql);
-    result = result || [];
-    if (result.length) {
-      return true;
+  async update(articleId: number, newArticle: Article): Promise<Article> {
+    try {
+      delete newArticle.id;
+      delete newArticle.content;
+      await this.repo.update(articleId, {
+        ...newArticle,
+      });
+      return this.findById(articleId);
+    } catch (error) {
+      console.error(error);
     }
-    return false;
   }
 
   async findPrevAndNext(id: number, publishedAt: Date): Promise<any> {
     try {
       return await Promise.all([
-        this.articleRepository.findOne({
+        this.repo.findOne({
           select: ['id', 'image', 'slug', 'title'],
           order: {
             publishedAt: 'ASC',
@@ -126,7 +188,7 @@ export class ArticleService {
             publishedAt: MoreThan(publishedAt),
           },
         }),
-        this.articleRepository.findOne({
+        this.repo.findOne({
           select: ['id', 'image', 'slug', 'title'],
           order: {
             publishedAt: 'DESC',
@@ -141,36 +203,5 @@ export class ArticleService {
     } catch (error) {
       return [null, null];
     }
-  }
-
-  async likeOrCancelLike(articleId: number, userId: number) {
-    const [userLiked, article] = await Promise.all([
-      this.isUserLiked(articleId, userId),
-      this.articleRepository.findOne({
-        select: ['id', 'userId'],
-        where: { id: articleId },
-      }),
-    ]);
-
-    if (!article) {
-      throw ArticleNotFound;
-    }
-    await this.articleRepository.manager.connection.transaction(async (manager) => {
-      if (userLiked) {
-        const cancelSQL1 = `DELETE FROM like_articles WHERE article_id = ? AND user_id = ?`;
-        const cancelSQL2 = `UPDATE articles SET liked_count = liked_count - 1 WHERE id = ?`;
-        const cancelSQL3 = `UPDATE users SET liked_count = liked_count - 1 WHERE id = ?`;
-        await manager.query(cancelSQL1, [articleId, userId]);
-        await manager.query(cancelSQL2, [articleId]);
-        await manager.query(cancelSQL3, [article.userId]);
-        return;
-      }
-      const sql1 = `INSERT INTO like_articles (user_id, article_id, publisher, created_at) VALUES (?, ?, ?, ?)`;
-      const sql2 = `UPDATE articles SET liked_count = liked_count + 1 WHERE id = ${articleId}`;
-      const sql3 = `UPDATE users SET liked_count = liked_count + 1 WHERE id = ?`;
-      await manager.query(sql1, [userId, articleId, article.userId, new Date()]);
-      await manager.query(sql2, [articleId]);
-      await manager.query(sql3, [article.userId]);
-    });
   }
 }
