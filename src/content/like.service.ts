@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserLike } from '@/entity/user-like.entity';
 import { LoggerService } from '@/common/logger.service';
+import { Article } from '@/entity/article.entity';
+import { paginate } from '@/common';
 
 export enum LikeType {
   Article = 'article',
@@ -14,6 +16,8 @@ export class LikeService {
   constructor(
     @InjectRepository(UserLike)
     private readonly repo: Repository<UserLike>,
+    @InjectRepository(Article)
+    private readonly articleRepo: Repository<Article>,
     private readonly logger: LoggerService,
   ) {}
 
@@ -49,7 +53,7 @@ export class LikeService {
     return true;
   }
 
-  async unLike(likeId: number, userId: number, type = LikeType.Article): Promise<boolean> {
+  async cancelLike(likeId: number, userId: number, type = LikeType.Article): Promise<boolean> {
     try {
       await this.repo.delete({
         like_id: likeId,
@@ -60,5 +64,17 @@ export class LikeService {
     } catch (error) {
       return false;
     }
+  }
+
+  async userLikeArticles(userId: number, { page, pageSize = 20 }: { page: number; pageSize?: number }) {
+    const builder = this.articleRepo
+      .createQueryBuilder('a')
+      .innerJoinAndSelect('likes', 'likes', 'likes.like_id = a.id AND likes.user_id = :userId AND likes.type = :type', {
+        userId,
+        type: LikeType.Article,
+      })
+      .leftJoinAndSelect('a.user', 'user')
+      .leftJoinAndSelect('a.category', 'category');
+    return await paginate<Article>(builder, { page, limit: pageSize });
   }
 }

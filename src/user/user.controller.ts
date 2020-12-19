@@ -12,10 +12,15 @@ export class UserController {
   constructor(private readonly userService: UserService, private readonly articleService: ArticleService) {}
 
   @ApiOperation({ summary: '用户列表', tags: ['user'] })
-  @Get(`${APIPrefix}/categories`)
+  @Get(`${APIPrefix}/users`)
   async list(@Query('s') s: string, @Query('page', ParsePagePipe) page: number) {
-    const data = await this.userService.list({ page });
-    return data;
+    return await this.userService.paginate(page, { s });
+  }
+
+  @ApiOperation({ summary: '管理后台用户列表', tags: ['user'] })
+  @Get(`${APIPrefix}/users`)
+  async get(@Query('s') s: string, @Query('page', ParsePagePipe) page: number) {
+    return await this.userService.paginate(page, { s });
   }
 
   @Get(`${APIPrefix}/users/:name`)

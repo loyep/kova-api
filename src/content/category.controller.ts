@@ -12,8 +12,7 @@ export class CategoryController {
   @ApiOperation({ summary: '分类列表', tags: ['category'] })
   @Get(`${APIPrefix}/categories`)
   async list(@Query('s') s: string, @Query('page', ParsePagePipe) page: number) {
-    const data = await this.categoryService.list({ page });
-    return data;
+    return await this.categoryService.paginate(page, { s });
   }
 
   @ApiOperation({ summary: '根据slug查询分类', tags: ['category'] })

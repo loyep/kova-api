@@ -2,9 +2,10 @@ import { LoggerService } from '@/common/logger.service';
 import { User, UserStatus } from '@/entity/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { compareSync } from 'bcrypt';
 import { ListResult } from '@/entity/listresult.entity';
+import { paginate } from '@/common';
 
 @Injectable()
 export class UserService {
@@ -30,6 +31,19 @@ export class UserService {
         totalPage: Math.ceil(count / pageSize),
       },
     };
+  }
+
+  paginate(page: number, { s, status = UserStatus.active }: { s?: string; status?: UserStatus } = {}) {
+    return paginate<User>(
+      this.repo,
+      { page, limit: 20 },
+      {
+        where: {
+          status,
+          ...(s ? { name: Like(`%${s}%`) } : {}),
+        },
+      },
+    );
   }
 
   async all(): Promise<User[]> {
@@ -101,7 +115,7 @@ export class UserService {
     return user;
   }
 
-  async findUser(where, select) {
+  async findUser(where, select: (keyof User)[] = []) {
     const user = await this.repo.findOne({
       select,
       where,

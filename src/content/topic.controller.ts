@@ -1,8 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { TopicNotFound, TopicService } from './topic.service';
 import { AdminAPIPrefix, APIPrefix } from '@/constants/constants';
 import { Topic } from '@/entity/topic.entity';
 import { ApiOperation } from '@nestjs/swagger';
+import { ParsePagePipe } from '@/core/pipes/parse-page.pipe';
 
 @Controller()
 export class TopicController {
@@ -10,9 +11,8 @@ export class TopicController {
 
   @ApiOperation({ summary: '专题列表', tags: ['topic'] })
   @Get(`${APIPrefix}/topics`)
-  async getAll() {
-    const topics: Topic[] = await this.topicService.all();
-    return topics;
+  async list(@Query('s') s: string, @Query('page', ParsePagePipe) page: number) {
+    return await this.topicService.paginate(page, { s });
   }
 
   @ApiOperation({ summary: '根据slug展示专题', tags: ['topic'] })

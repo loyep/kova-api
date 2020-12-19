@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToMany,
 } from 'typeorm';
 import { Article } from './article.entity';
 
@@ -40,7 +41,7 @@ export class User {
   @Column('varchar', { length: 100 })
   name: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, select: false })
   email: string;
 
   @Column('varchar', { name: 'display_name', nullable: true, default: null })
@@ -58,13 +59,13 @@ export class User {
   @Column('varchar', { nullable: true, default: null })
   image: string;
 
-  @Column('varchar', { nullable: true, default: null })
+  @Column('varchar', { nullable: true, default: null, select: false })
   cover: string;
 
   @Column('varchar', { default: UserStatus.inactivated })
   status: string;
 
-  @Column('varchar', { nullable: true, default: null })
+  @Column('varchar', { nullable: true, default: null, select: false })
   bio: string;
 
   @Column('varchar', {
@@ -78,7 +79,7 @@ export class User {
   @Column('varchar', { select: false })
   password: string;
 
-  @Column('datetime', { name: 'logged_at', nullable: true, default: null })
+  @Column('datetime', { name: 'logged_at', nullable: true, select: false, default: null })
   loggedAt: Date;
 
   @CreateDateColumn({ select: false })
@@ -92,4 +93,7 @@ export class User {
 
   @OneToMany(() => Article, (article: Article) => article.user)
   articles: Promise<Article[]>;
+
+  @ManyToMany(() => Article, (article: Article) => article.likedUsers)
+  likeArticles: Promise<Article[]>;
 }

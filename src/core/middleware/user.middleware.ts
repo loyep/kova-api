@@ -11,6 +11,7 @@ export class UserMiddleware implements NestMiddleware {
 
     req.user = null;
     const userId = req.session.userId;
+    console.log(userId);
     if (!userId) {
       next();
       return;

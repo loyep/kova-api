@@ -14,26 +14,28 @@ export class AuthController {
   constructor(private readonly userService: UserService, private readonly logger: LoggerService) {}
 
   @Post(`${APIPrefix}/login`)
-  async login(@Body() loginDto: LoginDto, @Req() req, @Res() res) {
-    const user = await this.userService.findUser(
-      {
-        name: loginDto.username,
-      },
-      { id: true, password: true },
-    );
-    if (!user || !this.userService.verifyPassword(loginDto.password, user.password)) {
-      throw new MyHttpException({
-        code: ErrorCode.ParamsError.CODE,
-        message: '账号或密码不正确',
-      });
+  async login(@Body() loginDto: LoginDto, @Req() req) {
+    try {
+      const user = await this.userService.findUser(
+        {
+          name: loginDto.name,
+        },
+        ['id', 'password'],
+      );
+      console.log('user', user);
+      if (!user || !this.userService.verifyPassword(loginDto.password, user.password)) {
+        throw new MyHttpException({
+          code: ErrorCode.ParamsError.CODE,
+          message: '账号或密码不正确',
+        });
+      }
+      const curUser = await this.userService.getUser(user.id);
+      req.session.userId = user.id;
+      console.log(req.session.cookie);
+      return curUser;
+    } catch (error) {
+      console.log(error);
     }
-    const curUser = await this.userService.getUser(user.id);
-    req.session.userId = user.id;
-    console.log(req.session.cookie);
-    return res.json({
-      code: ErrorCode.SUCCESS.CODE,
-      user: curUser,
-    });
   }
 
   @Post(`${APIPrefix}/register`)
@@ -42,9 +44,10 @@ export class AuthController {
       {
         name: registerDto.username,
       },
-      { id: true, password: true },
+      ['id', 'password'],
     );
     if (!user || !this.userService.verifyPassword(registerDto.password, user.password)) {
+      console.log('user');
       throw new MyHttpException({
         code: ErrorCode.ParamsError.CODE,
         message: '账号或密码不正确',

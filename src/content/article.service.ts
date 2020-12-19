@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not, LessThan, MoreThan } from 'typeorm';
+import { Repository, Not, LessThan, MoreThan, Like } from 'typeorm';
 import { Article, ArticleStatus } from '@/entity/article.entity';
-import { ListResult } from '@/entity/listresult.entity';
 import { defaultMeta } from '@/entity/category.entity';
+import { IPaginatorOptions, paginate } from '@/common';
 
 export const ArticleNotFound = new NotFoundException('未找到文章');
 
@@ -28,13 +28,11 @@ export class ArticleService {
     userId: number,
     {
       page,
-      pageSize,
     }: {
       page: number;
-      pageSize?: number;
     },
   ) {
-    return this.list({ userId, page, pageSize });
+    return this.paginate(page, { userId });
   }
 
   // 创建文章
@@ -62,50 +60,36 @@ export class ArticleService {
   //   this.tagService.updateListCache();
   //   return article;
   // }
+  paginate(
+    paginator: IPaginatorOptions,
+    {
+      s,
+      userId,
+      categoryId,
+      tagId,
+      status = ArticleStatus.published,
+    }: { s?: string; userId?: number; categoryId?: number; tagId?: number; status?: ArticleStatus } = {},
+  ) {
+    const builder = this.repo
+      .createQueryBuilder('a')
+      .leftJoinAndSelect('a.category', 'category')
+      .leftJoinAndSelect('a.user', 'user')
+      .where('a.status = :status', { status });
 
-  async list({
-    sort = 'publishedAt',
-    page,
-    pageSize = 20,
-    order = 'DESC',
-    userId,
-    categoryId,
-  }: {
-    sort?: string;
-    order?: 'DESC' | 'ASC';
-    page: number;
-    userId?: number;
-    categoryId?: number;
-    pageSize?: number;
-  }): Promise<ListResult<Article>> {
-    const [list, count] = await this.repo.findAndCount({
-      where: {
-        status: ArticleStatus.published,
-        ...(userId ? { userId } : {}),
-        ...(categoryId ? { categoryId } : {}),
-      },
-      order: {
-        [sort]: order,
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    });
-    return {
-      list,
-      meta: {
-        count,
-        page,
-        pageSize,
-        totalPage: Math.ceil(count / pageSize),
-      },
-    };
+    if (userId) builder.andWhere('a.user_id = :userId', { userId });
+    if (categoryId) builder.andWhere('a.category_id = :categoryId', { categoryId });
+    if (s) builder.andWhere('a.title like :title', { title: `%${s}%` });
+    if (tagId) builder.leftJoin('a.tags', 'tag').andWhere('tag.id = :tagId', { tagId });
+
+    return paginate<Article>(builder, paginator);
   }
 
   async bannerList() {
     const data = await this.repo.find({
-      select: ['id'],
+      select: ['id', 'image', 'slug', 'title'],
       where: {
         status: ArticleStatus.published,
+        image: Not(null),
       },
       take: 5,
       order: {
@@ -123,13 +107,7 @@ export class ArticleService {
       },
       relations: ['category', 'user', 'content'],
     });
-
-    if (article && !article.meta) {
-      article.meta = defaultMeta;
-      await this.repo.save(article);
-    } else {
-      article.meta = { ...defaultMeta, ...article.meta };
-    }
+    article.meta = { ...defaultMeta, ...article.meta };
     return article;
   }
 
@@ -141,13 +119,7 @@ export class ArticleService {
       },
       relations: ['category', 'user', 'content'],
     });
-
-    if (article && !article.meta) {
-      article.meta = defaultMeta;
-      await this.repo.save(article);
-    } else {
-      article.meta = { ...defaultMeta, ...article.meta };
-    }
+    article.meta = { ...defaultMeta, ...article.meta };
     return article;
   }
 
@@ -175,10 +147,11 @@ export class ArticleService {
   }
 
   async findPrevAndNext(id: number, publishedAt: Date): Promise<any> {
+    const select: (keyof Article)[] = ['id', 'image', 'slug', 'title'];
     try {
       return await Promise.all([
         this.repo.findOne({
-          select: ['id', 'image', 'slug', 'title'],
+          select,
           order: {
             publishedAt: 'ASC',
           },
@@ -189,7 +162,7 @@ export class ArticleService {
           },
         }),
         this.repo.findOne({
-          select: ['id', 'image', 'slug', 'title'],
+          select,
           order: {
             publishedAt: 'DESC',
           },

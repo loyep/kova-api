@@ -178,4 +178,8 @@ export class Article {
     inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
   })
   tags: Promise<Tag[]>;
+
+  @ManyToMany(() => User, (user: User) => user.likeArticles)
+  @JoinTable({ name: 'likes' })
+  likedUsers: Promise<User[]>;
 }

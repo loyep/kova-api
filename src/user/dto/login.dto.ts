@@ -12,7 +12,7 @@ export class LoginDto {
     message: '手机号码/邮箱地址或密码不正确',
   })
   @IsString()
-  readonly username: string;
+  readonly name: string;
 
   @Length(UserConstants.PASSWORD_MIN_LENGTH, UserConstants.PASSWORD_MAX_LENGTH, {
     message: ErrorCode.InvalidPassword.MESSAGE,

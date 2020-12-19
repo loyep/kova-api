@@ -1,8 +1,8 @@
 import { APIPrefix, AdminAPIPrefix } from '../constants/constants';
-import { Controller, Get, Query, Param, Res, Delete } from '@nestjs/common';
-import { Tag } from '@/entity/tag.entity';
+import { Controller, Get, Query, Param } from '@nestjs/common';
 import { TagService, TagNotFound } from './tag.service';
 import { ApiOperation } from '@nestjs/swagger';
+import { ParsePagePipe } from '@/core/pipes/parse-page.pipe';
 
 @Controller()
 export class TagController {
@@ -10,9 +10,8 @@ export class TagController {
 
   @ApiOperation({ summary: '标签列表', tags: ['tag'] })
   @Get(`${APIPrefix}/tags`)
-  async getAll() {
-    const tags: Tag[] = await this.tagService.all();
-    return tags;
+  async list(@Query('s') s: string, @Query('page', ParsePagePipe) page: number) {
+    return await this.tagService.paginate(page, { s });
   }
 
   @ApiOperation({ summary: '根据slug查标签', tags: ['tag'] })

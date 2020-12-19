@@ -7,16 +7,11 @@ import { ParsePagePipe } from '@/core/pipes/parse-page.pipe';
 import { MustIntPipe } from '@/core/pipes/must-int.pipe';
 import { CurUser } from '@/core/decorators/user.decorator';
 import { LikeService } from './like.service';
-import { LoggerService } from '@/common/logger.service';
 import { AuthGuard } from '@/core/guards/auth.guard';
 
 @Controller()
 export class ArticleController {
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly articleService: ArticleService,
-    private readonly likeService: LikeService,
-  ) {}
+  constructor(private readonly articleService: ArticleService, private readonly likeService: LikeService) {}
 
   async getAll() {
     const articles: Article[] = await this.articleService.all();
@@ -24,31 +19,35 @@ export class ArticleController {
   }
 
   @ApiOperation({ summary: '文章点赞', tags: ['article'] })
-  @Post(`${APIPrefix}/articles/:id/like`)
+  @Post(`${APIPrefix}/articles/:articleId/like`)
   @UseGuards(AuthGuard)
-  async like(@CurUser() user, @Param('id', MustIntPipe) id: number) {
-    await this.likeService.like(id, user.id);
+  async like(@CurUser() user, @Param('articleId', MustIntPipe) articleId: number) {
+    await this.likeService.like(articleId, user.id);
     return {};
   }
 
   @ApiOperation({ summary: '取消文章点赞', tags: ['article'] })
-  @Delete(`${APIPrefix}/articles/:id/like`)
+  @Delete(`${APIPrefix}/articles/:articleId/like`)
   @UseGuards(AuthGuard)
-  async cancelLike(@CurUser() user, @Param('id', MustIntPipe) id: number) {
-    await this.likeService.unLike(id, user.id);
+  async cancelLike(@CurUser() user, @Param('articleId', MustIntPipe) articleId: number) {
+    await this.likeService.cancelLike(articleId, user.id);
     return {};
   }
 
-  @Get(`${APIPrefix}/users/:id/article`)
-  async getArticleByUserId(@Param('id') id: number, @Query('page', ParsePagePipe) page: number) {
-    const data = await this.articleService.listByUserId(id, { page });
-    return data;
+  @ApiOperation({ summary: '查看某用户点赞的文章', tags: ['article'] })
+  @Get(`${APIPrefix}/articles/users/:userId/like`)
+  async userLikeArticles(@Param('userId', MustIntPipe) userId: number, @Query('page', ParsePagePipe) page: number) {
+    return await this.likeService.userLikeArticles(userId, { page });
+  }
+
+  @Get(`${APIPrefix}/users/:id/articles`)
+  async getArticleByUserId(@Param('id') userId: number, @Query('page', ParsePagePipe) page: number) {
+    return await this.articleService.paginate(page, { userId });
   }
 
   @Get(`${APIPrefix}/banners`)
   async banner() {
-    const data = await this.articleService.bannerList();
-    return data;
+    return await this.articleService.bannerList();
   }
 
   @ApiOperation({ summary: '根据slug查文章', tags: ['article'] })
@@ -71,16 +70,19 @@ export class ArticleController {
 
   @ApiOperation({ summary: '查询文章列表' })
   @Get(`${APIPrefix}/articles`)
-  async list(
+  list(
     @Query('s') s: string,
     @Query('page', ParsePagePipe) page: number,
     @Query('categoryId') categoryId: number,
     @Query('userId') userId: number,
+    @Query('tagId') tagId: number,
   ) {
-    const sort = 'publishedAt';
-    const order: 'DESC' | 'ASC' = 'DESC';
-    const data = await this.articleService.list({ sort, order, page, categoryId, userId });
-    return data;
+    return this.articleService.paginate(page, {
+      userId,
+      categoryId,
+      s,
+      tagId,
+    });
   }
 
   @ApiOperation({ summary: '创建文章' })

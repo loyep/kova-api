@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Tag } from '@/entity/tag.entity';
 import { ListResult } from '@/entity/listresult.entity';
+import { paginate } from '@/common';
 
 export const TagNotFound = new NotFoundException('未找到标签');
 
 @Injectable()
 export class TagService {
+  static readonly select: (keyof Tag)[] = ['id', 'image', 'name', 'description', 'articlesCount', 'slug'];
+
   constructor(
     @InjectRepository(Tag)
     private readonly repo: Repository<Tag>,
@@ -21,6 +24,18 @@ export class TagService {
       },
     } as any);
     return tags;
+  }
+
+  async paginate(page: number, { s }: { s?: string } = {}) {
+    return await paginate<Tag>(
+      this.repo,
+      { page, limit: 20 },
+      {
+        where: {
+          ...(s ? { name: Like(`%${s}%`) } : {}),
+        },
+      },
+    );
   }
 
   async list({ page, pageSize = 20 }: { page: number; pageSize?: number }): Promise<ListResult<Tag>> {
@@ -40,31 +55,19 @@ export class TagService {
     };
   }
 
-  async findBySlug(slug: string) {
-    const tag = await this.repo.findOne({
-      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+  async findBySlug(slug: string, select: (keyof Tag)[] = TagService.select) {
+    return await this.repo.findOneOrFail({
+      select,
       where: {
         slug,
       },
       relations: [],
     });
-    return tag;
   }
 
-  async findBySlugOrFail(slug: string) {
-    const tag = await this.repo.findOneOrFail({
-      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
-      where: {
-        slug,
-      },
-      relations: [],
-    });
-    return tag;
-  }
-
-  async findById(id: number) {
+  async findById(id: number, select: (keyof Tag)[] = TagService.select) {
     const tag = await this.repo.findOne({
-      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      select,
       where: {
         id,
       },

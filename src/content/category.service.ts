@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { Category } from '@/entity/category.entity';
 import { ListResult } from '@/entity/listresult.entity';
+import { paginate } from '@/common';
 
 export const CategoryNotFound = new NotFoundException('未找到分类');
 
@@ -20,6 +21,18 @@ export class CategoryService {
         createdAt: 'DESC',
       },
     } as any);
+  }
+
+  async paginate(page: number, { s }: { s?: string } = {}) {
+    return await paginate<Category>(
+      this.repo,
+      { page, limit: 20 },
+      {
+        where: {
+          ...(s ? { name: Like(`%${s}%`) } : {}),
+        },
+      },
+    );
   }
 
   async list({ page, pageSize = 20 }: { page: number; pageSize?: number }): Promise<ListResult<Category>> {
