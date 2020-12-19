@@ -72,12 +72,15 @@ export class ArticleService {
   ) {
     const builder = this.repo
       .createQueryBuilder('a')
-      .leftJoinAndSelect('a.category', 'category')
       .leftJoinAndSelect('a.user', 'user')
       .where('a.status = :status', { status });
 
+    if (categoryId) {
+      builder.andWhere('a.category_id = :categoryId', { categoryId });
+    } else {
+      builder.leftJoinAndSelect('a.category', 'category');
+    }
     if (userId) builder.andWhere('a.user_id = :userId', { userId });
-    if (categoryId) builder.andWhere('a.category_id = :categoryId', { categoryId });
     if (s) builder.andWhere('a.title like :title', { title: `%${s}%` });
     if (tagId) builder.leftJoin('a.tags', 'tag').andWhere('tag.id = :tagId', { tagId });
 

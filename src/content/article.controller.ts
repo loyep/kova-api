@@ -13,11 +13,6 @@ import { AuthGuard } from '@/core/guards/auth.guard';
 export class ArticleController {
   constructor(private readonly articleService: ArticleService, private readonly likeService: LikeService) {}
 
-  async getAll() {
-    const articles: Article[] = await this.articleService.all();
-    return articles;
-  }
-
   @ApiOperation({ summary: '文章点赞', tags: ['article'] })
   @Post(`${APIPrefix}/articles/:articleId/like`)
   @UseGuards(AuthGuard)

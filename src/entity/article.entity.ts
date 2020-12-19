@@ -57,6 +57,7 @@ export enum ArticleType {
   name: 'articles',
   orderBy: {
     publishedAt: 'DESC',
+    id: 'DESC',
   },
 })
 export class Article {

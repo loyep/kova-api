@@ -3,6 +3,7 @@ import { APIPrefix } from '@/constants/constants';
 import { ErrorCode } from '@/constants/error';
 import { CurUser } from '@/core/decorators/user.decorator';
 import { MyHttpException } from '@/core/exceptions/my-http.exception';
+import { AuthGuard } from '@/core/guards/auth.guard';
 import { GuestGuard } from '@/core/guards/guest.guard';
 import { Controller, Post, Body, Get, Res, Req, UseGuards } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
@@ -61,8 +62,8 @@ export class AuthController {
   }
 
   @Post(`${APIPrefix}/logout`)
-  @UseGuards(GuestGuard)
-  async logout(@Req() req, @Res() res) {
+  @UseGuards(AuthGuard)
+  async logout(@CurUser() user, @Req() req, @Res() res) {
     req.session.userId = null;
     req.session.destroy(() => {
       this.logger.info({ message: 'user logout' });
