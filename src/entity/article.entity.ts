@@ -67,15 +67,12 @@ export class Article {
   @IsNotEmpty({ message: '文章标题？' })
   @IsString({ message: '字符串？' })
   @Column('varchar', { nullable: true, default: null })
-  @Index({ fulltext: true })
   title: string;
 
   @Column('varchar', { default: ArticleStatus.published })
-  @Index()
   status: string;
 
   @Column('varchar', { nullable: true, default: null, unique: true })
-  @Index({ unique: true })
   slug: string;
 
   @Column('varchar', { nullable: true, default: null })
@@ -124,7 +121,6 @@ export class Article {
   password: string | null;
 
   @Column('datetime', { name: 'published_at', nullable: true, default: null })
-  @Index()
   publishedAt: Date | null;
 
   @CreateDateColumn({ select: false })
@@ -148,7 +144,6 @@ export class Article {
     default: null,
     select: false,
   })
-  @Index()
   categoryId: number;
 
   @ManyToOne(() => User, (user: User) => user.articles, {
@@ -163,7 +158,6 @@ export class Article {
     default: null,
     select: false,
   })
-  @Index()
   userId: number;
 
   prev: Article | null;
@@ -180,7 +174,7 @@ export class Article {
   })
   tags: Promise<Tag[]>;
 
-  @ManyToMany(() => User, (user: User) => user.likeArticles)
-  @JoinTable({ name: 'likes' })
-  likedUsers: Promise<User[]>;
+  // @ManyToMany(() => User, (user: User) => user.likeArticles)
+  // @JoinTable({ name: 'likes' })
+  // likedUsers: Promise<User[]>;
 }
