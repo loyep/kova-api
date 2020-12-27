@@ -94,6 +94,6 @@ export class User {
   @OneToMany(() => Article, (article: Article) => article.user)
   articles: Promise<Article[]>;
 
-  @ManyToMany(() => Article, (article: Article) => article.likedUsers)
-  likeArticles: Promise<Article[]>;
+  // @ManyToMany(() => Article, (article: Article) => article.likedUsers)
+  // likeArticles: Promise<Article[]>;
 }
