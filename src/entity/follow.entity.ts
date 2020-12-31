@@ -1,19 +1,19 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 
-@Entity({ name: 'follows' })
+@Entity({ name: "follows" })
 export class Follow {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  id: number
 
-  @Column('varchar', { nullable: true, default: null })
-  type: string;
+  @Column("varchar", { nullable: true, default: null })
+  type: string
 
   @CreateDateColumn({ select: false })
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn({ select: false })
-  updatedAt: Date;
+  updatedAt: Date
 
   @DeleteDateColumn({ select: false })
-  deletedAt: Date;
+  deletedAt: Date
 }

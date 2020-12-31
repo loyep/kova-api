@@ -7,36 +7,36 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
   DeleteDateColumn,
-} from 'typeorm';
-import { Article } from './article.entity';
+} from "typeorm"
+import { Article } from "./article.entity"
 
-@Entity({ name: 'contents' })
+@Entity({ name: "contents" })
 export class Content {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  id: number
 
-  @Column('mediumtext', { nullable: true, default: null })
-  markdown: string;
+  @Column("mediumtext", { nullable: true, default: null })
+  markdown: string
 
-  @Column('mediumtext', { nullable: true, default: null })
-  html: string;
+  @Column("mediumtext", { nullable: true, default: null })
+  html: string
 
-  @Column('mediumtext', { nullable: true, default: null })
-  content: string;
+  @Column("mediumtext", { nullable: true, default: null })
+  content: string
 
-  @Column('varchar', { nullable: true, default: null })
-  type: string;
+  @Column("varchar", { nullable: true, default: null })
+  type: string
 
   @OneToOne(() => Article, (article: Article) => article.content)
-  @JoinColumn({ name: 'article_id' })
-  article?: Article;
+  @JoinColumn({ name: "article_id" })
+  article?: Article
 
   @CreateDateColumn({ select: false })
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn({ select: false })
-  updatedAt: Date;
+  updatedAt: Date
 
   @DeleteDateColumn({ select: false })
-  deletedAt: Date;
+  deletedAt: Date
 }

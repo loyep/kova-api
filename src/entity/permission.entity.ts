@@ -1,16 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm"
 
-@Entity({ name: 'permissions' })
+@Entity({ name: "permissions" })
 export class Permission {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  id: number
 
   @CreateDateColumn({ select: false })
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn({ select: false })
-  updatedAt: Date;
+  updatedAt: Date
 
   @DeleteDateColumn({ select: false })
-  deletedAt: Date;
+  deletedAt: Date
 }

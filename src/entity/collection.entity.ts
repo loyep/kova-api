@@ -1,9 +1,9 @@
-import { CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
 
-@Entity({ name: 'collections' })
+@Entity({ name: "collections" })
 export class Collection {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  id: number
   // @PrimaryColumn('varchar')
   // type: string;
   // @PrimaryColumn('bigint', { unsigned: true })

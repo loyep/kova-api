@@ -6,53 +6,53 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Article } from './article.entity';
+} from "typeorm"
+import { Article } from "./article.entity"
 
 export interface TagMeta {
-  cover: string;
-  color: string;
-  background: string;
+  cover: string
+  color: string
+  background: string
 }
 
 export const defaultMeta: TagMeta = {
-  cover: '',
-  background: '',
-  color: '',
-};
+  cover: "",
+  background: "",
+  color: "",
+}
 
-@Entity({ name: 'tags' })
+@Entity({ name: "tags" })
 export class Tag {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  id: number
 
-  @Column('varchar', { unique: true })
-  name: string;
+  @Column("varchar", { unique: true })
+  name: string
 
-  @Column('varchar', { unique: true })
-  slug: string;
+  @Column("varchar", { unique: true })
+  slug: string
 
-  @Column('tinytext', { nullable: true, default: null })
-  description?: string;
+  @Column("tinytext", { nullable: true, default: null })
+  description?: string
 
-  @Column('varchar', { nullable: true, default: null })
-  image: string | null;
+  @Column("varchar", { nullable: true, default: null })
+  image: string | null
 
-  @Column('simple-json', { default: null, select: true })
-  meta: TagMeta;
+  @Column("simple-json", { default: null, select: true })
+  meta: TagMeta
 
-  @Column('bigint', { name: 'articles_count', unsigned: true, default: 0 })
-  articlesCount: number;
+  @Column("bigint", { name: "articles_count", unsigned: true, default: 0 })
+  articlesCount: number
 
   @CreateDateColumn({ select: false })
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn({ select: false })
-  updatedAt: Date;
+  updatedAt: Date
 
   @DeleteDateColumn({ select: false })
-  deletedAt: Date;
+  deletedAt: Date
 
   @ManyToMany(() => Article, (article: Article) => article.tags)
-  articles: Promise<Article[]>;
+  articles: Promise<Article[]>
 }

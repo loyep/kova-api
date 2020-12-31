@@ -11,168 +11,168 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-} from 'typeorm';
-import { Category } from './category.entity';
-import { User } from './user.entity';
-import { Tag } from './tag.entity';
-import { Content } from './content.entity';
-import { IsNotEmpty, IsString } from 'class-validator';
+} from "typeorm"
+import { Category } from "./category.entity"
+import { User } from "./user.entity"
+import { Tag } from "./tag.entity"
+import { Content } from "./content.entity"
+import { IsNotEmpty, IsString } from "class-validator"
 
 export interface ArticleMeta {
-  cover: string;
-  color: string;
-  background: string;
+  cover: string
+  color: string
+  background: string
 }
 
 export function defaultMeta(): ArticleMeta {
   return {
-    cover: '',
-    background: '',
-    color: '',
-  };
+    cover: "",
+    background: "",
+    color: "",
+  }
 }
 
 export enum ArticleStatus {
-  published = 'published',
-  private = 'private',
-  password = 'password',
-  draft = 'draft',
+  published = "published",
+  private = "private",
+  password = "password",
+  draft = "draft",
 }
 
 export enum ArticleCommentType {
-  allow = 'allow',
-  refuse = 'refuse',
-  commented = 'commented',
-  logged = 'logged',
+  allow = "allow",
+  refuse = "refuse",
+  commented = "commented",
+  logged = "logged",
 }
 
 export enum ArticleType {
-  default = 'default',
+  default = "default",
   // refuse = 'refuse',
   // commented = 'commented',
   // logged = 'logged',
 }
 
 @Entity({
-  name: 'articles',
+  name: "articles",
   orderBy: {
-    publishedAt: 'DESC',
-    id: 'DESC',
+    publishedAt: "DESC",
+    id: "DESC",
   },
 })
 export class Article {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  id: number
 
-  @IsNotEmpty({ message: '文章标题？' })
-  @IsString({ message: '字符串？' })
-  @Column('varchar', { nullable: true, default: null })
-  title: string;
+  @IsNotEmpty({ message: "文章标题？" })
+  @IsString({ message: "字符串？" })
+  @Column("varchar", { nullable: true, default: null })
+  title: string
 
-  @Column('varchar', { default: ArticleStatus.published })
-  status: string;
+  @Column("varchar", { default: ArticleStatus.published })
+  status: string
 
-  @Column('varchar', { nullable: true, default: null, unique: true })
-  slug: string;
+  @Column("varchar", { nullable: true, default: null, unique: true })
+  slug: string
 
-  @Column('varchar', { nullable: true, default: null })
-  image: string | null;
+  @Column("varchar", { nullable: true, default: null })
+  image: string | null
 
-  @Column('varchar', { nullable: true, default: null })
-  excerpt: string | null;
+  @Column("varchar", { nullable: true, default: null })
+  excerpt: string | null
 
-  @Column('simple-json', { default: null, select: true })
-  meta: ArticleMeta;
+  @Column("simple-json", { default: null, select: true })
+  meta: ArticleMeta
 
   @OneToOne(() => Content, (content: Content) => content.article)
-  content: Content | null;
+  content: Content | null
 
-  @Column('bigint', {
-    name: 'content_id',
+  @Column("bigint", {
+    name: "content_id",
     nullable: true,
     default: 0,
     unsigned: true,
   })
-  contentId: number;
+  contentId: number
 
-  @Column('tinytext', { nullable: true, default: null })
-  cover: string | null;
+  @Column("tinytext", { nullable: true, default: null })
+  cover: string | null
 
-  @Column('varchar', { default: ArticleType.default })
-  type: string;
+  @Column("varchar", { default: ArticleType.default })
+  type: string
 
-  @Column('int', { name: 'views_count', unsigned: true, default: 0 })
-  viewsCount: number;
+  @Column("int", { name: "views_count", unsigned: true, default: 0 })
+  viewsCount: number
 
-  @Column('int', { name: 'likes_count', unsigned: true, default: 0 })
-  likesCount: number;
+  @Column("int", { name: "likes_count", unsigned: true, default: 0 })
+  likesCount: number
 
-  @Column('int', { name: 'comments_count', unsigned: true, default: 0 })
+  @Column("int", { name: "comments_count", unsigned: true, default: 0 })
   @Index()
-  commentsCount: number;
+  commentsCount: number
 
-  @Column('varchar', {
-    name: 'comment_type',
+  @Column("varchar", {
+    name: "comment_type",
     default: ArticleCommentType.allow,
   })
-  commentType: string;
+  commentType: string
 
-  @Column('varchar', { nullable: true, default: null, select: false })
-  password: string | null;
+  @Column("varchar", { nullable: true, default: null, select: false })
+  password: string | null
 
-  @Column('datetime', { name: 'published_at', nullable: true, default: null })
-  publishedAt: Date | null;
+  @Column("datetime", { name: "published_at", nullable: true, default: null })
+  publishedAt: Date | null
 
   @CreateDateColumn({ select: false })
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn({ select: false })
-  updatedAt: Date;
+  updatedAt: Date
 
   @DeleteDateColumn({ select: false })
-  deletedAt: Date;
+  deletedAt: Date
 
   @ManyToOne(() => Category, (category: Category) => category.articles, {
-    onDelete: 'NO ACTION',
+    onDelete: "NO ACTION",
   })
-  @JoinColumn({ name: 'category_id' })
-  category: Category;
+  @JoinColumn({ name: "category_id" })
+  category: Category
 
-  @Column('bigint', {
-    name: 'category_id',
+  @Column("bigint", {
+    name: "category_id",
     nullable: true,
     default: null,
     select: false,
   })
-  categoryId: number;
+  categoryId: number
 
   @ManyToOne(() => User, (user: User) => user.articles, {
-    onDelete: 'NO ACTION',
+    onDelete: "NO ACTION",
   })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @JoinColumn({ name: "user_id" })
+  user: User
 
-  @Column('bigint', {
-    name: 'user_id',
+  @Column("bigint", {
+    name: "user_id",
     nullable: true,
     default: null,
     select: false,
   })
-  userId: number;
+  userId: number
 
-  prev: Article | null;
+  prev: Article | null
 
-  next: Article | null;
+  next: Article | null
 
-  related: Article[];
+  related: Article[]
 
   @ManyToMany(() => Tag, (tag: Tag) => tag.articles)
   @JoinTable({
-    name: 'article_tags',
-    joinColumn: { name: 'article_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
+    name: "article_tags",
+    joinColumn: { name: "article_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "tag_id", referencedColumnName: "id" },
   })
-  tags: Promise<Tag[]>;
+  tags: Promise<Tag[]>
 
   // @ManyToMany(() => User, (user: User) => user.likeArticles)
   // @JoinTable({ name: 'likes' })

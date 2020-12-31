@@ -1,8 +1,8 @@
 import * as url from 'url';
 import * as csurf from 'csurf';
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { APIPrefix } from '../../constants/constants';
-import { LoggerService } from '../../common/logger.service';
+import { APIPrefix } from '@/constants/constants';
+import { LoggerService } from '@/common/logger.service';
 
 const csrfProtection = csurf({
   cookie: true,

@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not, LessThan, MoreThan, Like } from 'typeorm';
-import { Post, PostStatus } from '@/entity/post.entity';
-import { defaultMeta } from '@/entity/category.entity';
-import { IPaginatorOptions, paginate } from '@/common';
+import { Injectable, NotFoundException } from "@nestjs/common"
+import { InjectRepository } from "@nestjs/typeorm"
+import { Repository, Not, LessThan, MoreThan, Like } from "typeorm"
+import { Post, PostStatus } from "@/entity/post.entity"
+import { defaultMeta } from "@/entity/category.entity"
+import { IPaginatorOptions, paginate } from "@/common"
 
-export const PostNotFound = new NotFoundException('未找到文章');
+export const PostNotFound = new NotFoundException("未找到文章")
 
 @Injectable()
 export class PostService {
@@ -16,12 +16,12 @@ export class PostService {
 
   async all(): Promise<Post[]> {
     const posts: Post[] = await this.repo.find({
-      select: ['id', 'title'],
+      select: ["id", "title"],
       order: {
-        createdAt: 'DESC',
+        createdAt: "DESC",
       },
-    } as any);
-    return posts;
+    } as any)
+    return posts
   }
 
   listByUserId(
@@ -29,10 +29,10 @@ export class PostService {
     {
       page,
     }: {
-      page: number;
+      page: number
     },
   ) {
-    return this.paginate(page, { userId });
+    return this.paginate(page, { userId })
   }
 
   // 创建文章
@@ -71,35 +71,35 @@ export class PostService {
     }: { s?: string; userId?: number; categoryId?: number; tagId?: number; status?: PostStatus } = {},
   ) {
     const builder = this.repo
-      .createQueryBuilder('a')
-      .leftJoinAndSelect('a.user', 'user')
-      .where('a.status = :status', { status });
+      .createQueryBuilder("a")
+      .leftJoinAndSelect("a.user", "user")
+      .where("a.status = :status", { status })
 
     if (categoryId) {
-      builder.andWhere('a.category_id = :categoryId', { categoryId });
+      builder.andWhere("a.category_id = :categoryId", { categoryId })
     } else {
-      builder.leftJoinAndSelect('a.category', 'category');
+      builder.leftJoinAndSelect("a.category", "category")
     }
-    if (userId) builder.andWhere('a.user_id = :userId', { userId });
-    if (s) builder.andWhere('a.title like :title', { title: `%${s}%` });
-    if (tagId) builder.leftJoin('a.tags', 'tag').andWhere('tag.id = :tagId', { tagId });
+    if (userId) builder.andWhere("a.user_id = :userId", { userId })
+    if (s) builder.andWhere("a.title like :title", { title: `%${s}%` })
+    if (tagId) builder.leftJoin("a.tags", "tag").andWhere("tag.id = :tagId", { tagId })
 
-    return paginate<Post>(builder, paginator);
+    return paginate<Post>(builder, paginator)
   }
 
   async bannerList() {
     const data = await this.repo.find({
-      select: ['id', 'title'],
+      select: ["id", "title"],
       where: {
         status: PostStatus.published,
         image: Not(null),
       },
       take: 5,
       order: {
-        publishedAt: 'DESC',
+        publishedAt: "DESC",
       },
-    });
-    return data;
+    })
+    return data
   }
 
   async findBySlug(slug: string, status: PostStatus = PostStatus.published) {
@@ -108,9 +108,9 @@ export class PostService {
         slug,
         status,
       },
-      relations: ['category', 'user', 'content'],
-    });
-    return post;
+      relations: ["category", "user", "content"],
+    })
+    return post
   }
 
   async findById(id: number, status: PostStatus = PostStatus.published) {
@@ -119,9 +119,9 @@ export class PostService {
         id,
         status,
       },
-      relations: ['category', 'user', 'content'],
-    });
-    return post;
+      relations: ["category", "user", "content"],
+    })
+    return post
   }
 
   // 创建文章
@@ -129,20 +129,20 @@ export class PostService {
     const post = await this.repo.save({
       ...newPost,
       meta: defaultMeta,
-    });
-    return await this.repo.findOne(post.id);
+    })
+    return await this.repo.findOne(post.id)
   }
 
   // 更新文章
   async update(postId: number, newPost: Post): Promise<Post> {
     try {
-      delete newPost.id;
+      delete newPost.id
       await this.repo.update(postId, {
         ...newPost,
-      });
-      return this.findById(postId);
+      })
+      return this.findById(postId)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 }

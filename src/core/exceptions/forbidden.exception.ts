@@ -5,8 +5,8 @@
  * @author Surmon <https://github.com/surmon-china>
  */
 
-import { ErrorCode } from '@/constants/error';
-import { MyHttpException, MyHttpExceptionData } from './my-http.exception';
+import { ErrorCode } from "@/constants/error"
+import { MyHttpException, MyHttpExceptionData } from "./my-http.exception"
 
 /**
  * @class HttpForbiddenError
@@ -20,6 +20,6 @@ export class ForbiddenException extends MyHttpException {
       ...expData,
       code: ErrorCode.Forbidden.CODE,
       message: ErrorCode.Forbidden.MESSAGE,
-    });
+    })
   }
 }

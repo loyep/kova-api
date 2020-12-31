@@ -1,4 +1,4 @@
-import { HttpModule, Module, CacheModule } from '@nestjs/common';
+import { HttpModule, Module, CacheModule } from "@nestjs/common"
 
 @Module({
   imports: [

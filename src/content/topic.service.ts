@@ -1,14 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
-import { Topic } from '@/entity/topic.entity';
-import { paginate } from '@/common';
+import { Injectable, NotFoundException } from "@nestjs/common"
+import { InjectRepository } from "@nestjs/typeorm"
+import { Like, Repository } from "typeorm"
+import { Topic } from "@/entity/topic.entity"
+import { paginate } from "@/common"
 
-export const TopicNotFound = new NotFoundException('未找到专题');
+export const TopicNotFound = new NotFoundException("未找到专题")
 
 @Injectable()
 export class TopicService {
-  static readonly select: (keyof Topic)[] = ['id', 'image', 'name', 'description', 'articlesCount', 'slug'];
+  static readonly select: (keyof Topic)[] = ["id", "image", "name", "description", "articlesCount", "slug"]
 
   constructor(
     @InjectRepository(Topic)
@@ -17,12 +17,12 @@ export class TopicService {
 
   async all(): Promise<Topic[]> {
     const topics: Topic[] = await this.repo.find({
-      select: ['id', 'image', 'name', 'description', 'postsCount'],
+      select: ["id", "image", "name", "description", "postsCount"],
       order: {
-        createdAt: 'DESC',
+        createdAt: "DESC",
       },
-    } as any);
-    return topics;
+    } as any)
+    return topics
   }
 
   async paginate(page: number, { s }: { s?: string } = {}) {
@@ -34,7 +34,7 @@ export class TopicService {
           ...(s ? { name: Like(`%${s}%`) } : {}),
         },
       },
-    );
+    )
   }
 
   async findBySlug(slug: string, select: (keyof Topic)[] = TopicService.select) {
@@ -44,7 +44,7 @@ export class TopicService {
         slug,
       },
       relations: [],
-    });
+    })
   }
 
   async findById(id: number, select: (keyof Topic)[] = TopicService.select) {
@@ -54,7 +54,7 @@ export class TopicService {
         id,
       },
       relations: [],
-    });
-    return tag;
+    })
+    return tag
   }
 }

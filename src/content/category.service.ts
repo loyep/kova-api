@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { Category } from '@/entity/category.entity';
-import { ListResult } from '@/entity/listresult.entity';
-import { paginate } from '@/common';
+import { Injectable, NotFoundException } from "@nestjs/common"
+import { InjectRepository } from "@nestjs/typeorm"
+import { Repository, Like } from "typeorm"
+import { Category } from "@/entity/category.entity"
+import { ListResult } from "@/entity/listresult.entity"
+import { paginate } from "@/common"
 
-export const CategoryNotFound = new NotFoundException('未找到分类');
+export const CategoryNotFound = new NotFoundException("未找到分类")
 
 @Injectable()
 export class CategoryService {
@@ -16,11 +16,11 @@ export class CategoryService {
 
   all(): Promise<Category[]> {
     return this.repo.find({
-      select: ['id', 'image', 'name', 'description', 'postsCount'],
+      select: ["id", "image", "name", "description", "postsCount"],
       order: {
-        createdAt: 'DESC',
+        createdAt: "DESC",
       },
-    } as any);
+    } as any)
   }
 
   async paginate(page: number, { s }: { s?: string } = {}) {
@@ -32,7 +32,7 @@ export class CategoryService {
           ...(s ? { name: Like(`%${s}%`) } : {}),
         },
       },
-    );
+    )
   }
 
   async list({ page, pageSize = 20 }: { page: number; pageSize?: number }): Promise<ListResult<Category>> {
@@ -40,7 +40,7 @@ export class CategoryService {
       where: {},
       skip: (page - 1) * pageSize,
       take: pageSize,
-    });
+    })
     return {
       list,
       meta: {
@@ -49,26 +49,26 @@ export class CategoryService {
         pageSize,
         totalPage: Math.ceil(count / pageSize),
       },
-    };
+    }
   }
 
   findBySlug(slug: string) {
     return this.repo.findOneOrFail({
-      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      select: ["id", "image", "name", "description", "articlesCount", "slug"],
       where: {
         slug,
       },
       relations: [],
-    });
+    })
   }
 
   findById(id: number) {
     return this.repo.findOne({
-      select: ['id', 'image', 'name', 'description', 'articlesCount', 'slug'],
+      select: ["id", "image", "name", "description", "articlesCount", "slug"],
       where: {
         id,
       },
       relations: [],
-    });
+    })
   }
 }

@@ -1,11 +1,11 @@
-import { LoggerService } from '@/common/logger.service';
-import { User, UserStatus } from '@/entity/user.entity';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
-import { compareSync } from 'bcrypt';
-import { ListResult } from '@/entity/listresult.entity';
-import { paginate } from '@/common';
+import { LoggerService } from "@/common/logger.service"
+import { User, UserStatus } from "@/entity/user.entity"
+import { Injectable } from "@nestjs/common"
+import { InjectRepository } from "@nestjs/typeorm"
+import { Like, Repository } from "typeorm"
+import { compareSync } from "bcrypt"
+import { ListResult } from "@/entity/listresult.entity"
+import { paginate } from "@/common"
 
 @Injectable()
 export class UserService {
@@ -21,7 +21,7 @@ export class UserService {
     const [list, count] = await this.repo.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
-    });
+    })
     return {
       list,
       meta: {
@@ -30,7 +30,7 @@ export class UserService {
         pageSize,
         totalPage: Math.ceil(count / pageSize),
       },
-    };
+    }
   }
 
   paginate(page: number, { s, status = UserStatus.active }: { s?: string; status?: UserStatus } = {}) {
@@ -43,84 +43,84 @@ export class UserService {
           ...(s ? { name: Like(`%${s}%`) } : {}),
         },
       },
-    );
+    )
   }
 
   async all(): Promise<User[]> {
     const users: User[] = await this.repo.find({
       order: {
-        createdAt: 'DESC',
+        createdAt: "DESC",
       },
-    });
-    return users;
+    })
+    return users
   }
 
   verifyPassword(password: string, oldPwd: string) {
     if (!password || !oldPwd) {
-      return false;
+      return false
     }
-    return compareSync(password, oldPwd);
+    return compareSync(password, oldPwd)
   }
 
   async getUser(id: number): Promise<User> {
     this.logger.info({
       data: {
-        thecodeline: 'this.redisService.getUser ' + id,
+        thecodeline: "this.redisService.getUser " + id,
       },
-    });
+    })
 
-    let user: User = null; // = await this.redisService.getUser(id);
+    let user: User = null // = await this.redisService.getUser(id);
 
     this.logger.info({
       data: {
-        thecodeline: 'user null ?' + !user,
+        thecodeline: "user null ?" + !user,
       },
-    });
+    })
 
     if (!user) {
       this.logger.info({
         data: {
-          thecodeline: 'this.userRepository.findOne',
+          thecodeline: "this.userRepository.findOne",
         },
-      });
+      })
 
       try {
         user = await this.repo.findOne({
-          select: ['id', 'status', 'name', 'avatar', 'displayName', 'email'],
+          select: ["id", "status", "name", "avatar", "displayName", "email"],
           where: {
             id,
           },
-        });
+        })
       } catch (err) {
         this.logger.info({
-          message: [err.message, err.stack].join('\n'),
-        });
-        throw err;
+          message: [err.message, err.stack].join("\n"),
+        })
+        throw err
       }
 
       this.logger.info({
         data: {
-          thecodeline: 'this.redisService.setUser',
+          thecodeline: "this.redisService.setUser",
         },
-      });
+      })
       // await this.redisService.setUser(user);
     }
 
     this.logger.info({
       data: {
-        thecodeline: '===> user.service.getUser done',
+        thecodeline: "===> user.service.getUser done",
       },
-    });
+    })
 
-    return user;
+    return user
   }
 
   async findUser(where, select: (keyof User)[] = []) {
     const user = await this.repo.findOne({
       select,
       where,
-    });
-    return user;
+    })
+    return user
   }
 
   async findByName(name: string, status: UserStatus = UserStatus.active) {
@@ -130,8 +130,8 @@ export class UserService {
         status,
       },
       // relations: ['category', 'user', 'content'],
-    });
-    user.url = user.url || '';
-    return user;
+    })
+    user.url = user.url || ""
+    return user
   }
 }

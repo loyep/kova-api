@@ -1,2 +1,2 @@
-export * from './common.module';
-export * from './paginate';
+export * from "./common.module"
+export * from "./paginate"

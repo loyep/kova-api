@@ -1,37 +1,37 @@
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common"
 
 class LogData {
-  public message?: string;
-  public data?: any;
+  public message?: string
+  public data?: any
 }
 
 export class LoggerService {
-  private readonly logger = new Logger('LoggerService', true);
+  private readonly logger = new Logger("LoggerService", true)
 
   private writeLog(logMethod: string, logData: LogData) {
-    logData = logData || { message: '', data: {} };
+    logData = logData || { message: "", data: {} }
     // (logData as any).timeLocal = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
     // logger[logMethod](logData);
-    this.logger.log(typeof logData === 'object' ? JSON.stringify(logData) : logData);
+    this.logger.log(typeof logData === "object" ? JSON.stringify(logData) : logData)
   }
 
   debug(logData: LogData) {
-    this.writeLog('debug', logData);
+    this.writeLog("debug", logData)
   }
 
   info(logData: LogData) {
-    this.writeLog('info', logData);
+    this.writeLog("info", logData)
   }
 
   error(logData: LogData) {
-    this.writeLog('error', logData);
+    this.writeLog("error", logData)
   }
 
   warn(logData: LogData) {
-    this.writeLog('warn', logData);
+    this.writeLog("warn", logData)
   }
 
   fatal(logData: LogData) {
-    this.writeLog('fatal', logData);
+    this.writeLog("fatal", logData)
   }
 }
