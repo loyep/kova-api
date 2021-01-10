@@ -1,7 +1,6 @@
 import * as _ from "lodash"
 import defaultJSON from "./cfg.default"
 import developmentJSON from "./cfg.development"
-import testJSON from "./cfg.test"
 import productionJSON from "./cfg.production"
 import { ServerConfig } from "./type/ServerConfig"
 import DBConfig from "./type/DBConfig"
@@ -19,7 +18,7 @@ export class ConfigService {
   constructor() {
     const envConfigMap = {
       development: developmentJSON,
-      test: testJSON,
+      test: {},
       production: productionJSON,
     }
     console.log(envConfigMap)
