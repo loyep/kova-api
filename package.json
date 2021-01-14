@@ -18,7 +18,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "pm2": "pm2 start --name kova dist/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.4",
@@ -37,7 +38,6 @@
     "dayjs": "^1.9.8",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "mongoose": "^5.11.8",
     "mysql": "^2.18.1",
     "pino": "^6.7.0",
     "reflect-metadata": "^0.1.13",
