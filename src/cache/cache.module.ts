@@ -8,7 +8,7 @@ import * as redisStore from "cache-manager-redis-store"
   imports: [
     NestCacheModule.register({
       store: redisStore,
-      host: "140.143.245.194",
+      host: "localhost",
       port: 6379,
     }),
   ],
