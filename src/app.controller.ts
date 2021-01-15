@@ -34,19 +34,14 @@ export class AppController {
     this.logger.info({
       message: `accessToken:${accessToken}`,
     })
-    // const urlscheme = await this.urlschemeGenerate(accessToken)
-    // return urlscheme
-    return accessToken
+    const urlscheme = await this.urlschemeGenerate(accessToken)
+    return urlscheme
   }
 
   async getAccessToken() {
     let accessToken: string = await this.cacheService.get("accessToken")
     this.logger.info({
       message: `accessToken2:${accessToken}`,
-    })
-    accessToken = "222"
-    await this.cacheService.set("accessToken", accessToken, {
-      ttl: 7000,
     })
     if (accessToken) {
       return accessToken
