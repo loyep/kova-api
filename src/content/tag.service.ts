@@ -9,7 +9,7 @@ export const TagNotFound = new NotFoundException("未找到标签")
 
 @Injectable()
 export class TagService {
-  static readonly select: (keyof Tag)[] = ["id", "image", "name", "description", "articlesCount", "slug"]
+  static readonly select: (keyof Tag)[] = ["id", "image", "name", "description", "postsCount", "slug"]
 
   constructor(
     @InjectRepository(Tag)

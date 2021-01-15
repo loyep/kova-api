@@ -1,5 +1,5 @@
 import { CommonModule } from "@/common/common.module"
-import { Article, ArticleService } from "@/content"
+import { Post, PostService } from "@/content"
 import { User } from "@/entity/user.entity"
 import { Global, Module } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
@@ -9,8 +9,8 @@ import { UserService } from "./user.service"
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Article]), CommonModule],
-  providers: [UserService, ArticleService],
+  imports: [TypeOrmModule.forFeature([User, Post]), CommonModule],
+  providers: [UserService, PostService],
   controllers: [UserController, AuthController],
   exports: [UserService],
 })

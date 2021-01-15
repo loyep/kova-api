@@ -54,7 +54,7 @@ export class CategoryService {
 
   findBySlug(slug: string) {
     return this.repo.findOneOrFail({
-      select: ["id", "image", "name", "description", "articlesCount", "slug"],
+      select: ["id", "image", "name", "description", "postsCount", "slug"],
       where: {
         slug,
       },
@@ -64,7 +64,7 @@ export class CategoryService {
 
   findById(id: number) {
     return this.repo.findOne({
-      select: ["id", "image", "name", "description", "articlesCount", "slug"],
+      select: ["id", "image", "name", "description", "postsCount", "slug"],
       where: {
         id,
       },

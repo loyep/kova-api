@@ -1,4 +1,4 @@
-import { APIPrefix, AdminAPIPrefix } from "../constants/constants"
+import { APIPrefix } from "../constants/constants"
 import { Controller, Get, Query, Param } from "@nestjs/common"
 import { TagService, TagNotFound } from "./tag.service"
 import { ApiOperation } from "@nestjs/swagger"

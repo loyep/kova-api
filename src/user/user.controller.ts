@@ -1,6 +1,6 @@
 import { APIPrefix } from "@/constants/constants"
 import { ErrorCode } from "@/constants/error"
-import { ArticleService } from "@/content"
+import { PostService } from "@/content"
 import { MyHttpException } from "@/core/exceptions/my-http.exception"
 import { ParsePagePipe } from "@/core/pipes/parse-page.pipe"
 import { Controller, Get, Param, Query } from "@nestjs/common"
@@ -9,7 +9,7 @@ import { UserService } from "./user.service"
 
 @Controller()
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly articleService: ArticleService) {}
+  constructor(private readonly userService: UserService, private readonly postService: PostService) {}
 
   @ApiOperation({ summary: "用户列表", tags: ["user"] })
   @Get(`${APIPrefix}/users`)

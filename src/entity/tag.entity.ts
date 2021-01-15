@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
-import { Article } from "./article.entity"
+import { Post } from "./post.entity"
 
 export interface TagMeta {
   cover: string
@@ -41,8 +41,8 @@ export class Tag {
   @Column("simple-json", { default: null, select: true })
   meta: TagMeta
 
-  @Column("bigint", { name: "articles_count", unsigned: true, default: 0 })
-  articlesCount: number
+  @Column("bigint", { name: "posts_count", unsigned: true, default: 0 })
+  postsCount: number
 
   @CreateDateColumn({ select: false })
   createdAt: Date
@@ -53,6 +53,6 @@ export class Tag {
   @DeleteDateColumn({ select: false })
   deletedAt: Date
 
-  @ManyToMany(() => Article, (article: Article) => article.tags)
-  articles: Promise<Article[]>
+  @ManyToMany(() => Post, (post: Post) => post.tags)
+  posts: Promise<Post[]>
 }

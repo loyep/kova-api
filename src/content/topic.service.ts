@@ -8,7 +8,7 @@ export const TopicNotFound = new NotFoundException("未找到专题")
 
 @Injectable()
 export class TopicService {
-  static readonly select: (keyof Topic)[] = ["id", "image", "name", "description", "articlesCount", "slug"]
+  static readonly select: (keyof Topic)[] = ["id", "image", "name", "description", "postsCount", "slug"]
 
   constructor(
     @InjectRepository(Topic)

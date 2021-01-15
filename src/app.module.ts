@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm"
 import { ConfigModule, ConfigService } from "./config"
 import { CommonModule } from "./common"
 import { UserModule } from "./user"
+import { WechatModule } from "./wechat"
 import { UserMiddleware } from "./core/middleware/user.middleware"
 import { ContentModule } from "./content"
 import { CacheModule } from "./cache"
@@ -14,7 +15,7 @@ import { HealthController } from "./health.controller"
   imports: [
     ConfigModule,
     TypeOrmModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => {
+      useFactory: (configService: ConfigService) => {
         // typeorm bug, https://github.com/nestjs/nest/issues/1119
         // 将 type 定义为 type: 'mysql' | 'mariadb'; 解决此issue
         return configService.db
@@ -25,6 +26,7 @@ import { HealthController } from "./health.controller"
     ContentModule,
     CacheModule,
     UserModule,
+    WechatModule,
     TerminusModule,
   ],
   controllers: [AppController, HealthController],

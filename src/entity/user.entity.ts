@@ -6,9 +6,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  ManyToMany,
 } from "typeorm"
-import { Article } from "./article.entity"
+import { Post } from "./post.entity"
 
 export interface UserMeta {
   cover: string
@@ -91,9 +90,9 @@ export class User {
   @DeleteDateColumn({ select: false })
   deletedAt: Date
 
-  @OneToMany(() => Article, (article: Article) => article.user)
-  articles: Promise<Article[]>
+  @OneToMany(() => Post, (post: Post) => post.user)
+  posts: Promise<Post[]>
 
-  // @ManyToMany(() => Article, (article: Article) => article.likedUsers)
-  // likeArticles: Promise<Article[]>;
+  // @ManyToMany(() => Post, (post: Post) => post.likedUsers)
+  // likePosts: Promise<Post[]>;
 }

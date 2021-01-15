@@ -8,7 +8,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
 } from "typeorm"
-import { Article } from "./article.entity"
+import { Post } from "./post.entity"
 
 export interface CategoryMeta {
   cover: string
@@ -49,8 +49,8 @@ export class Category {
   @Column("simple-json", { default: null, select: true })
   meta: CategoryMeta
 
-  @Column("bigint", { name: "articles_count", unsigned: true, default: 0 })
-  articlesCount: number
+  @Column("bigint", { name: "posts_count", unsigned: true, default: 0 })
+  postsCount: number
 
   @CreateDateColumn({ select: false })
   createdAt: Date
@@ -61,6 +61,6 @@ export class Category {
   @DeleteDateColumn({ select: false })
   deletedAt: Date
 
-  @OneToMany(() => Article, (article: Article) => article.category)
-  articles: Promise<Article[]>
+  @OneToMany(() => Post, (post: Post) => post.category)
+  posts: Promise<Post[]>
 }

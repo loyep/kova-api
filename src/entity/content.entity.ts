@@ -8,7 +8,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
 } from "typeorm"
-import { Article } from "./article.entity"
+import { Post } from "./post.entity"
 
 @Entity({ name: "contents" })
 export class Content {
@@ -27,9 +27,9 @@ export class Content {
   @Column("varchar", { nullable: true, default: null })
   type: string
 
-  @OneToOne(() => Article, (article: Article) => article.content)
-  @JoinColumn({ name: "article_id" })
-  article?: Article
+  @OneToOne(() => Post, (post: Post) => post.content)
+  @JoinColumn({ name: "post_id" })
+  post?: Post
 
   @CreateDateColumn({ select: false })
   createdAt: Date

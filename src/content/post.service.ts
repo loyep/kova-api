@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { Repository, Not, LessThan, MoreThan, Like } from "typeorm"
+import { Repository, Not, LessThan, MoreThan } from "typeorm"
 import { Post, PostStatus } from "@/entity/post.entity"
 import { defaultMeta } from "@/entity/category.entity"
 import { IPaginatorOptions, paginate } from "@/common"
@@ -16,7 +16,7 @@ export class PostService {
 
   async all(): Promise<Post[]> {
     const posts: Post[] = await this.repo.find({
-      select: ["id", "title"],
+      select: ["id", "image", "name", "description"],
       order: {
         createdAt: "DESC",
       },
@@ -89,7 +89,7 @@ export class PostService {
 
   async bannerList() {
     const data = await this.repo.find({
-      select: ["id", "title"],
+      select: ["id", "image", "slug", "title"],
       where: {
         status: PostStatus.published,
         image: Not(null),
@@ -110,6 +110,7 @@ export class PostService {
       },
       relations: ["category", "user", "content"],
     })
+    post.meta = { ...defaultMeta, ...post.meta }
     return post
   }
 
@@ -121,6 +122,7 @@ export class PostService {
       },
       relations: ["category", "user", "content"],
     })
+    post.meta = { ...defaultMeta, ...post.meta }
     return post
   }
 
@@ -137,12 +139,45 @@ export class PostService {
   async update(postId: number, newPost: Post): Promise<Post> {
     try {
       delete newPost.id
+      delete newPost.content
       await this.repo.update(postId, {
         ...newPost,
       })
       return this.findById(postId)
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  async findPrevAndNext(id: number, publishedAt: Date): Promise<any> {
+    const select: (keyof Post)[] = ["id", "image", "slug", "title"]
+    try {
+      return await Promise.all([
+        this.repo.findOne({
+          select,
+          order: {
+            publishedAt: "ASC",
+          },
+          where: {
+            id: Not(id),
+            status: PostStatus.published,
+            publishedAt: MoreThan(publishedAt),
+          },
+        }),
+        this.repo.findOne({
+          select,
+          order: {
+            publishedAt: "DESC",
+          },
+          where: {
+            id: Not(id),
+            status: PostStatus.published,
+            publishedAt: LessThan(publishedAt),
+          },
+        }),
+      ])
+    } catch (error) {
+      return [null, null]
     }
   }
 }
