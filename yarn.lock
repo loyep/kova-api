@@ -607,10 +607,10 @@
     tslib "2.0.3"
     uuid "8.3.2"
 
-"@nestjs/mapped-types@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.npm.taobao.org/@nestjs/mapped-types/download/@nestjs/mapped-types-0.1.1.tgz#2fa9ff0f1ddbe66d5d1c80ae59df21c0ed0d1361"
-  integrity sha1-L6n/Dx3b5m1dHICuWd8hwO0NE2E=
+"@nestjs/mapped-types@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npm.taobao.org/@nestjs/mapped-types/download/@nestjs/mapped-types-0.2.0.tgz#f4a688a40bcd2a51dcc6309b55e7278c7d166d35"
+  integrity sha1-9KaIpAvNKlHcxjCbVecnjH0WbTU=
 
 "@nestjs/platform-express@^7.6.4":
   version "7.6.5"
@@ -634,11 +634,11 @@
     pluralize "8.0.0"
 
 "@nestjs/swagger@^4.7.8":
-  version "4.7.10"
-  resolved "https://registry.npm.taobao.org/@nestjs/swagger/download/@nestjs/swagger-4.7.10.tgz?cache=0&sync_timestamp=1610444739922&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40nestjs%2Fswagger%2Fdownload%2F%40nestjs%2Fswagger-4.7.10.tgz#f25349fe1f1511011ee1a2da5cacbf3536b50b37"
-  integrity sha1-8lNJ/h8VEQEe4aLaXKy/NTa1Czc=
+  version "4.7.11"
+  resolved "https://registry.npm.taobao.org/@nestjs/swagger/download/@nestjs/swagger-4.7.11.tgz?cache=0&sync_timestamp=1610717826252&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40nestjs%2Fswagger%2Fdownload%2F%40nestjs%2Fswagger-4.7.11.tgz#75b1dcbdf24da6a6270cf326cc9f5a2dced3e8e0"
+  integrity sha1-dbHcvfJNpqYnDPMmzJ9aLc7T6OA=
   dependencies:
-    "@nestjs/mapped-types" "0.1.1"
+    "@nestjs/mapped-types" "0.2.0"
     lodash "4.17.20"
     path-to-regexp "3.2.0"
 
