@@ -1,6 +1,7 @@
 import { CacheService } from "@/cache"
 import { LoggerService } from "@/common/logger.service"
 import { HttpService, Injectable } from "@nestjs/common"
+import { config } from "rxjs"
 
 interface WechatOption {
   appid: string
@@ -29,19 +30,12 @@ export class WechatService {
       accessToken = await this.getAccessToken()
     }
     const url = `https://api.weixin.qq.com/wxa/generatescheme?access_token=${accessToken}`
-    const { data } = await this.http.post(url, postData).toPromise()
-    this.logger.debug({
-      data: {
-        url,
-        data: {
-          jumpWxa: {
-            path: "pages/index",
-          },
-          isExpire: true,
-          expireTime: Date.now() / 1000 + 60,
-        },
-      },
-    })
+    const { data } = await this.http
+      .post(url, {
+        is_expire: true,
+        expire_time: Date.now() / 1000 + 60,
+      })
+      .toPromise()
     return data
   }
 
