@@ -33,7 +33,13 @@ export class WechatService {
     this.logger.debug({
       data: {
         url,
-        data: data,
+        data: {
+          jumpWxa: {
+            path: "pages/index",
+          },
+          isExpire: true,
+          expireTime: Date.now() / 1000 + 60,
+        },
       },
     })
     return data
