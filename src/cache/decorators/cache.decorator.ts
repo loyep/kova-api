@@ -30,7 +30,7 @@ export function Cache<T>(options?: CacheManagerOptions) {
               ? of(res)
               : originalMethod
                   .apply(this, args)
-                  .pipe(tap((methodResult: T) => cache.set<T>(cacheKey, methodResult, options))),
+                  .pipe(tap((methodResult: T) => cache.put<T>(cacheKey, methodResult, options.ttl))),
           ),
         )
       }

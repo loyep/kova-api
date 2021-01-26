@@ -2,7 +2,6 @@
 import { Controller, Get, Injectable } from "@nestjs/common"
 // import SnowFlake from "./common/snowflake"
 import { CacheService } from "./cache"
-import axios from "axios"
 import { LoggerService } from "./common/logger.service"
 import { WechatService } from "./wechat/wechat.service"
 
@@ -19,11 +18,31 @@ export class AppController {
 
   @Get("/")
   async index() {
-    const accessToken = await this.wechat.getAccessToken()
-    this.logger.info({
-      message: `accessToken:${accessToken}`,
-    })
-    const urlscheme = await this.wechat.urlschemeGenerate({}, accessToken)
-    return urlscheme
+    // const value = await this.cacheService.remember("ewee", () => "222", 3000)
+    // const exists = await this.cacheService.has("ewee")
+    // try {
+    //   await this.cacheService.add("ewee", "22233")
+    // } catch (error) {
+    //   console.log(error)
+    // }
+    const res = await this.cacheService.remember("222", 3333)
+    await this.cacheService.put("e2wee", 3333, 0)
+    await this.cacheService.forever("222", 3333)
+    const value = await this.cacheService.get("ewee")
+    return { value, res }
+    // const accessToken = await this.wechat.getAccessToken()
+    // this.logger.info({
+    //   message: `accessToken:${accessToken}`,
+    // })
+    // // const urlscheme = await this.wechat.urlschemeGenerate({}, accessToken)
+    // // return urlscheme
+    // const key = await this.cacheService.remember(
+    //   "test2",
+    //   async () => {
+    //     return await this.wechat.getAccessToken()
+    //   },
+    //   { ttl: 600 },
+    // )
+    // return { key }
   }
 }
