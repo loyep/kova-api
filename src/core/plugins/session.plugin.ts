@@ -24,13 +24,15 @@ export const sessionPlugin = (_app?: INestApplication) => {
     password: "heli921227",
   })
 
+  const oneDay = 24 * 60 * 60 * 1000
+
   const plugin = session({
-    name: "kova_session",
+    name: "kid",
     secret: "kova",
-    resave: true,
+    resave: false,
     rolling: true,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 * 60 * 1200, domain: ".loyep.com" },
+    cookie: { maxAge: oneDay * 7, path: "/", domain: ".loyep.com" },
     store: new RedisStore({
       client,
     }),

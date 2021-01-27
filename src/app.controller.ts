@@ -30,6 +30,7 @@ export class AppController {
     await this.cacheService.forever("222", 3333)
     const value = await this.cacheService.get("ewee")
     req.session["222"] = 666
+    req.session["22222"] = 666
     return { value, res2 }
     // const accessToken = await this.wechat.getAccessToken()
     // this.logger.info({
