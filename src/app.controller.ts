@@ -1,5 +1,5 @@
 // import { APIPrefix } from "@/constants/constants"
-import { Controller, Get, Injectable } from "@nestjs/common"
+import { Controller, Get, Injectable, Req } from "@nestjs/common"
 // import SnowFlake from "./common/snowflake"
 import { CacheService } from "./cache"
 import { LoggerService } from "./common/logger.service"
@@ -17,7 +17,7 @@ export class AppController {
   ) {}
 
   @Get("/")
-  async index() {
+  async index(@Req() req) {
     // const value = await this.cacheService.remember("ewee", () => "222", 3000)
     // const exists = await this.cacheService.has("ewee")
     // try {
@@ -25,11 +25,12 @@ export class AppController {
     // } catch (error) {
     //   console.log(error)
     // }
-    const res = await this.cacheService.remember("222", 3333)
+    const res2 = await this.cacheService.remember("222", 3333)
     await this.cacheService.put("e2wee", 3333, 0)
     await this.cacheService.forever("222", 3333)
     const value = await this.cacheService.get("ewee")
-    return { value, res }
+    req.session["222"] = 666
+    return { value, res2 }
     // const accessToken = await this.wechat.getAccessToken()
     // this.logger.info({
     //   message: `accessToken:${accessToken}`,

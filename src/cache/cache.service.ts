@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { RedisService } from "nestjs-redis"
-import { Redis } from "ioredis"
+import type { Redis } from "ioredis"
 
 type DefCallback<T> = null | T | (() => Promise<T> | T)
 
@@ -85,20 +85,11 @@ export class CacheService {
   }
 
   async add<T>(key: string, value: T, ttl = this.ttl): Promise<T | boolean> {
-    // if (ttl !== null) {
-    //   if (this.getSeconds(ttl) <= 0) {
-    //     return false
-    //   }
-    // }
     const exists = await this.has(key)
     if (!exists) {
       return await this.put(key, value, ttl)
     }
     return false
-  }
-
-  getSeconds(ttl: number) {
-    return ttl
   }
 
   async remember<T>(key: string, callback: DefCallback<T>, ttl = this.ttl) {
