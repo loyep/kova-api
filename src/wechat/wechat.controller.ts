@@ -20,7 +20,7 @@ export class WechatController {
       this.logger.info({
         data: req.query,
       })
-      const { signature, timestamp, nonce } = req.query || {}
+      const { signature, timestamp, nonce, echostr } = req.query || {}
       const token = "jingyin"
       const str = [nonce, timestamp, token].sort().join("")
       this.logger.info({
@@ -34,10 +34,10 @@ export class WechatController {
           sign,
         },
       })
-      res.send(sign === signature)
+      res.send(sign === signature ? echostr : "")
     } catch (error) {
       console.log(error)
-      res.send(false)
+      res.send("")
     }
   }
 }
