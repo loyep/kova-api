@@ -57,6 +57,7 @@ export class WechatController {
           content: "666",
         },
       })
+      res.send(0)
     } catch (error) {
       console.log(error)
       res.send("")
