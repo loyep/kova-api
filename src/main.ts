@@ -1,11 +1,15 @@
 import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
-import { Logger } from "@nestjs/common"
+import { LogLevel } from "@nestjs/common"
 import bootstrap from "./bootstrap"
+
+const isProduction = process.env.NODE_ENV === "production"
+
+const logLevels: LogLevel[] = isProduction ? ["error", "warn"] : ["log", "error", "warn", "debug", "verbose"]
 
 async function main() {
   const app = await NestFactory.create(AppModule, {
-    logger: process.env.NODE_ENV === "development" ? new Logger() : false,
+    logger: logLevels,
   })
   await bootstrap(app)
 }

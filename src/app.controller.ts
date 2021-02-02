@@ -27,6 +27,12 @@ export class AppController {
     // }
     const res2 = await this.cacheService.remember("222", 3333)
     await this.cacheService.put("e2wee", 3333, 0)
+    this.logger.info({
+      data: {
+        cacheKey: "e2wee",
+        value: 3333,
+      },
+    })
     await this.cacheService.forever("222", 3333)
     const value = await this.cacheService.get("ewee")
     req.session["222"] = 666

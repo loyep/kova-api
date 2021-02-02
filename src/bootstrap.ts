@@ -8,6 +8,8 @@ export default async function bootstrap(app: INestApplication, listening = true)
   const configService: ConfigService = app.get(ConfigService)
   const loggerService: LoggerService = app.get(LoggerService)
 
+  app.setGlobalPrefix("/api")
+
   loggerService.info({
     message: "Starting Nest application...",
     data: {

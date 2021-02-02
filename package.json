@@ -8,9 +8,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "dev": "cross-env NODE_ENV=development nest start --watch",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -37,6 +37,7 @@
     "class-validator": "^0.13.1",
     "connect-redis": "^5.0.0",
     "cross-env": "^7.0.2",
+    "crypto": "^1.0.1",
     "csurf": "^1.11.0",
     "dayjs": "^1.9.8",
     "lodash": "^4.17.20",

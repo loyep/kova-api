@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { RedisService } from "nestjs-redis"
 import type { Redis } from "ioredis"
+import { LoggerService } from "@/common/logger.service"
 
 type DefCallback<T> = null | T | (() => Promise<T> | T)
 
@@ -10,7 +11,7 @@ export class CacheService {
   private ttl = 600
   public store: Redis
 
-  constructor(private redisService: RedisService) {
+  constructor(private readonly redisService: RedisService, private readonly logger: LoggerService) {
     this.getStore()
   }
 
@@ -35,7 +36,11 @@ export class CacheService {
       try {
         value = JSON.parse(cached)
       } catch (error) {
-        console.log(error)
+        this.logger.info({
+          data: {
+            error,
+          },
+        })
       }
       return value
     }
