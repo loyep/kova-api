@@ -2,6 +2,48 @@ import { CacheService } from "@/cache"
 import { LoggerService } from "@/common/logger.service"
 import { HttpService, Injectable } from "@nestjs/common"
 
+export type WechatMsgType = "text" | "image" | "link" | "miniprogrampage" | "event"
+
+export interface WechatMessageContent {
+  touser: string
+  msgtype: WechatMsgType
+}
+
+export interface WechatTextMessage extends WechatMessageContent {
+  msgtype: "text"
+  text: {
+    content: string
+  }
+}
+
+export interface WechatImageMessage extends WechatMessageContent {
+  msgtype: "image"
+  image: {
+    media_id: string
+  }
+}
+
+export interface WechatLinkMessage extends WechatMessageContent {
+  msgtype: "link"
+  link: {
+    title: string
+    description: string
+    url: string
+    thumb_url: string
+  }
+}
+
+export interface WechatMiniProgrampageMessage extends WechatMessageContent {
+  msgtype: "miniprogrampage"
+  miniprogrampage: {
+    title: string
+    pagepath: string
+    thumb_media_id: string
+  }
+}
+
+type WechatMessage = WechatMiniProgrampageMessage | WechatLinkMessage | WechatImageMessage | WechatTextMessage
+
 interface WechatOption {
   appid: string
   secret: string
@@ -53,18 +95,22 @@ export class WechatService {
     return accessToken
   }
 
-  async sendCustomerServiceMessage({ touser, msgtype, text }: { touser: string; msgtype: string; text: any }) {
+  sendCustomerServiceMessage(message: WechatImageMessage): Promise<any>
+  sendCustomerServiceMessage(message: WechatMiniProgrampageMessage): Promise<any>
+  sendCustomerServiceMessage(message: WechatLinkMessage): Promise<any>
+  sendCustomerServiceMessage(message: WechatTextMessage): Promise<any>
+  async sendCustomerServiceMessage(message: WechatMessage) {
     const accessToken: string = await this.getAccessToken()
+    const { touser, msgtype } = message
     this.logger.info({
       data: {
         touser,
         msgtype,
-        text,
         accessToken,
       },
     })
     const url = `https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=${accessToken}`
-    const res = await this.http.post(url, { touser, msgtype, text }).toPromise()
+    const res = await this.http.post(url, message).toPromise()
     return res
   }
 }
