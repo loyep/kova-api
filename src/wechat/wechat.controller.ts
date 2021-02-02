@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res } from "@nestjs/common"
+import { Controller, Get, Post, Req, Res } from "@nestjs/common"
 import { LoggerService } from "@/common/logger.service"
 import { WechatService } from "./wechat.service"
 import { createHash } from "crypto"
@@ -35,6 +35,26 @@ export class WechatController {
         },
       })
       res.send(sign === signature ? echostr : "")
+    } catch (error) {
+      console.log(error)
+      res.send("")
+    }
+  }
+
+  @Post("/wechat")
+  async handleMessage(@Req() req: any, @Res() res: any) {
+    try {
+      this.logger.info({
+        data: req.data,
+      })
+      const { FromUserName } = req.data || {}
+      this.wechatService.sendCustomerServiceMessage({
+        touser: FromUserName,
+        msgtype: "text",
+        text: {
+          content: "666",
+        },
+      })
     } catch (error) {
       console.log(error)
       res.send("")

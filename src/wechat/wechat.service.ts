@@ -52,4 +52,22 @@ export class WechatService {
     }
     return accessToken
   }
+
+  async sendCustomerServiceMessage({ touser, msgtype, text }: { touser: string; msgtype: string; text: any }) {
+    const accessToken: string = await this.getAccessToken()
+    this.logger.info({
+      data: {
+        touser,
+        msgtype,
+        text,
+        accessToken,
+      },
+    })
+    const url = `https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=${accessToken}`
+    const res = await this.http.post(url, { touser, msgtype, text }).toPromise()
+    this.logger.info({
+      data: res,
+    })
+    return res
+  }
 }
