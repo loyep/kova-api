@@ -49,7 +49,7 @@ export class WechatController {
       // this.logger.info({
       //   data: req.body,
       // })
-      const { FromUserName } = req.data || {}
+      const { FromUserName } = req.body || {}
       await this.wechatService.sendCustomerServiceMessage({
         touser: FromUserName,
         msgtype: "text",
