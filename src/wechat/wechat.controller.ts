@@ -17,11 +17,22 @@ export class WechatController {
   @Get("/wechat")
   async checkSignature(@Req() req: any, @Res() res: any) {
     try {
-      const { signature, timestamp, nonce } = req.query || {}
-      const token = "jingyin"
-      const sign = sha1([nonce, timestamp, token].join(""))
       this.logger.info({
         data: req.query,
+      })
+      const { signature, timestamp, nonce } = req.query || {}
+      const token = "jingyin"
+      const str = [nonce, timestamp, token].sort().join("")
+      this.logger.info({
+        data: {
+          str,
+        },
+      })
+      const sign = sha1(str)
+      this.logger.info({
+        data: {
+          sign,
+        },
       })
       res.send(sign === signature)
     } catch (error) {
