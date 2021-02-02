@@ -44,11 +44,13 @@ export class WechatController {
   @Post("/wechat")
   async handleMessage(@Req() req: any, @Res() res: any) {
     try {
-      this.logger.info({
-        data: req.data,
-      })
+      console.log(req.body)
+      console.log(req.data)
+      // this.logger.info({
+      //   data: req.body,
+      // })
       const { FromUserName } = req.data || {}
-      this.wechatService.sendCustomerServiceMessage({
+      await this.wechatService.sendCustomerServiceMessage({
         touser: FromUserName,
         msgtype: "text",
         text: {
