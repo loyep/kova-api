@@ -42,11 +42,6 @@ export class LoggerService extends NestLogger {
         format: format.combine(format.uncolorize()),
       }),
       new transports.Console(),
-      // new transports.File({
-      //   dirname: logDir,
-      //   filename: "logs.log",
-      //   format: format.combine(format.uncolorize()),
-      // }),
     ],
   })
 
