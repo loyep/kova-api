@@ -7,6 +7,8 @@ const transports = winston.transports
 
 const logDir = "./storage/logs/"
 
+const procIndex = process.env.NODE_APP_INSTANCE === null ? 0 : process.env.NODE_APP_INSTANCE
+
 export class LoggerService extends NestLogger {
   // logger
   private readonly logger = winston.createLogger({
@@ -34,10 +36,12 @@ export class LoggerService extends NestLogger {
     transports: [
       new transports.DailyRotateFile({
         dirname: logDir,
-        filename: "%DATE%.log",
+        filename: `${procIndex}-${process.pid}-%DATE%.log`,
         datePattern: "YYYY-MM-DD",
         zippedArchive: true,
         maxSize: "20m",
+        json: false,
+        handleExceptions: true,
         maxFiles: "14d",
         format: format.combine(format.uncolorize()),
       }),
