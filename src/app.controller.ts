@@ -18,16 +18,9 @@ export class AppController {
 
   @Get("/")
   async index(@Req() req) {
-    // const value = await this.cacheService.remember("ewee", () => "222", 3000)
-    // const exists = await this.cacheService.has("ewee")
-    // try {
-    //   await this.cacheService.add("ewee", "22233")
-    // } catch (error) {
-    //   console.log(error)
-    // }
     const res2 = await this.cacheService.remember("222", 3333)
     await this.cacheService.put("e2wee", 3333, 0)
-    this.logger.info({
+    this.logger.log({
       data: {
         cacheKey: "e2wee",
         value: 3333,
@@ -39,7 +32,7 @@ export class AppController {
     req.session["22222"] = 666
     return { value, res2 }
     // const accessToken = await this.wechat.getAccessToken()
-    // this.logger.info({
+    // this.logger.log({
     //   message: `accessToken:${accessToken}`,
     // })
     // // const urlscheme = await this.wechat.urlschemeGenerate({}, accessToken)

@@ -1,37 +1,96 @@
-import { Logger } from "@nestjs/common"
+import { Logger as NestLogger } from "@nestjs/common"
+import * as winston from "winston"
+import "winston-daily-rotate-file"
 
-class LogData {
-  public message?: string
-  public data?: any
+const format = winston.format
+const transports = winston.transports
+
+const logDir = "./storage/logs/"
+
+export class LoggerService extends NestLogger {
+  // logger
+  private readonly logger = winston.createLogger({
+    exitOnError: false,
+    format: format.combine(
+      format.colorize({
+        colors: {
+          error: "red",
+          info: "green",
+          warn: "yellow",
+          debug: "green",
+          verbose: "red",
+        },
+      }),
+      format.splat(),
+      format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+      format.printf((info) => {
+        if (info.stack) {
+          info.message = info.stack
+        }
+        return `${info.timestamp} [${info.pid}] ${info.level}: [${info.context || "Application"}] ${info.message}`
+      }),
+    ),
+    defaultMeta: { pid: process.pid },
+    transports: [
+      new transports.DailyRotateFile({
+        dirname: logDir,
+        filename: "%DATE%.log",
+        datePattern: "YYYY-MM-DD",
+        zippedArchive: true,
+        maxSize: "20m",
+        maxFiles: "14d",
+      }),
+      new transports.Console(),
+      new transports.File({
+        dirname: logDir,
+        filename: "logs.log",
+        format: format.combine(format.uncolorize()),
+      }),
+    ],
+  })
+
+  info(message: any, context?: string) {
+    this.logger.log("info", {
+      context,
+      message: typeof message === "object" ? JSON.stringify(message) : message,
+    })
+  }
+
+  log(message: any, context?: string) {
+    this.logger.log("info", {
+      context,
+      message: typeof message === "object" ? JSON.stringify(message) : message,
+    })
+  }
+
+  debug(message: any, context?: string) {
+    this.logger.log("debug", {
+      context,
+      message: typeof message === "object" ? JSON.stringify(message) : message,
+    })
+  }
+
+  error(message: any, trace?: string, context?: string) {
+    this.logger.log("error", {
+      context,
+      message: typeof message === "object" ? JSON.stringify(message) : message,
+      trace,
+    })
+  }
+
+  warn(message: any, context?: string) {
+    this.logger.log("warn", {
+      context,
+      message: typeof message === "object" ? JSON.stringify(message) : message,
+    })
+  }
+
+  verbose(message: any, context?: string) {
+    this.logger.log("verbose", {
+      context,
+      message: typeof message === "object" ? JSON.stringify(message) : message,
+    })
+  }
 }
 
-export class LoggerService {
-  private readonly logger = new Logger("LoggerService", true)
-
-  private writeLog(logMethod: string, logData: LogData) {
-    logData = logData || { message: "", data: {} }
-    // (logData as any).timeLocal = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
-    // logger[logMethod](logData);
-    this.logger.log(typeof logData === "object" ? JSON.stringify(logData) : logData)
-  }
-
-  debug(logData: LogData) {
-    this.writeLog("debug", logData)
-  }
-
-  info(logData: LogData) {
-    this.writeLog("info", logData)
-  }
-
-  error(logData: LogData) {
-    this.writeLog("error", logData)
-  }
-
-  warn(logData: LogData) {
-    this.writeLog("warn", logData)
-  }
-
-  fatal(logData: LogData) {
-    this.writeLog("fatal", logData)
-  }
-}
+export class Logger extends LoggerService {}

@@ -8,14 +8,10 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest()
-    const { url, method, params = {}, query = {}, headers } = request
+    const { url, method, params = {}, query = {} } = request
 
-    try {
-      this.logger.log(`Before: ${method} ${url} with :
+    this.logger.log(`Before: ${method} ${url} with :
     params: ${JSON.stringify(params)}, with query: ${JSON.stringify(query)}`)
-    } catch (error) {
-      console.log(request)
-    }
 
     const now = Date.now()
     return next.handle().pipe(tap(() => this.logger.log(`After: ${method} ${url} took ${Date.now() - now}ms`)))

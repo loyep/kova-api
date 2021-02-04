@@ -10,10 +10,43 @@ import { ContentModule } from "./content"
 import { CacheModule } from "./cache"
 import { AppController } from "./app.controller"
 import { HealthController } from "./health.controller"
+// import { WinstonModule } from "nest-winston"
+// import * as winston from "winston"
+// import DailyRotateFile from "winston-daily-rotate-file"
+// const format = winston.format
 
 @Module({
   imports: [
     ConfigModule,
+    // WinstonModule.forRoot({
+    //   exitOnError: false,
+    //   format: format.combine(
+    //     format.colorize(),
+    //     format.timestamp({
+    //       format: "HH:mm:ss YY/MM/DD",
+    //     }),
+    //     format.label({
+    //       label: "测试",
+    //     }),
+
+    //     format.splat(),
+    //     format.printf((info) => {
+    //       return `${info.timestamp} ${info.level}: [${info.label}]${info.message}`
+    //     }),
+    //   ),
+    //   transports: [
+    //     new winston.transports.Console({
+    //       level: "info",
+    //     }),
+    //     new DailyRotateFile({
+    //       filename: "logs/application-%DATE%.log",
+    //       datePattern: "YYYY-MM-DD-HH",
+    //       zippedArchive: true,
+    //       maxSize: "20m",
+    //       maxFiles: "14d",
+    //     }),
+    //   ],
+    // }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         // typeorm bug, https://github.com/nestjs/nest/issues/1119

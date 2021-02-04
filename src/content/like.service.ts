@@ -35,7 +35,7 @@ export class LikeService {
   async like(likeId: number, userId: number, type = LikeType.Post): Promise<boolean> {
     try {
       if (this.isLiked(likeId, userId, type)) {
-        this.logger.info({
+        this.logger.log({
           data: {
             thecodeline: `like warn ${type} likeId:${likeId} has liked.`,
           },

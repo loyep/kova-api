@@ -103,7 +103,7 @@ export class WechatService {
   async sendCustomerServiceMessage(message: WechatMessage) {
     const accessToken: string = await this.getAccessToken()
     const { touser, msgtype } = message
-    this.logger.info({
+    this.logger.log({
       data: {
         touser,
         msgtype,

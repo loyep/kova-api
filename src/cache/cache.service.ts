@@ -36,7 +36,7 @@ export class CacheService {
       try {
         value = JSON.parse(cached)
       } catch (error) {
-        this.logger.info({
+        this.logger.log({
           data: {
             error,
           },

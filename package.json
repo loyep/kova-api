@@ -42,13 +42,16 @@
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
+    "nest-winston": "^1.4.0",
     "nestjs-redis": "^1.2.8",
     "pino": "^6.11.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
     "swagger-ui-express": "^4.1.6",
-    "typeorm": "^0.2.29"
+    "typeorm": "^0.2.29",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.5.1",
@@ -62,6 +65,7 @@
     "@types/node": "^14.14.24",
     "@types/pino": "^6.3.4",
     "@types/supertest": "^2.0.10",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
     "eslint": "^7.19.0",

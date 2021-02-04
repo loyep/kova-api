@@ -1,22 +1,22 @@
 import {
   DiskHealthIndicator,
-  DNSHealthIndicator,
+  // HttpHealthIndicator,
   HealthCheck,
   HealthCheckService,
   MemoryHealthIndicator,
-  TypeOrmHealthIndicator,
+  // TypeOrmHealthIndicator,
 } from "@nestjs/terminus"
 import { APIPrefix } from "@/constants/constants"
 import { Controller, Get } from "@nestjs/common"
-import { ErrorCode } from "./constants/error"
-import { MyHttpException } from "./core/exceptions/my-http.exception"
+import { ErrorCode } from "@/constants/error"
+import { MyHttpException } from "@/core/exceptions/my-http.exception"
 
 @Controller()
 export class HealthController {
   constructor(
     private readonly health: HealthCheckService,
-    private readonly dns: DNSHealthIndicator,
-    private readonly db: TypeOrmHealthIndicator,
+    // private readonly dns: HttpHealthIndicator,
+    // private readonly db: TypeOrmHealthIndicator,
     private readonly disk: DiskHealthIndicator,
     private readonly memory: MemoryHealthIndicator,
   ) {}

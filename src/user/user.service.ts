@@ -63,7 +63,7 @@ export class UserService {
   }
 
   async getUser(id: number): Promise<User> {
-    this.logger.info({
+    this.logger.log({
       data: {
         thecodeline: "this.redisService.getUser " + id,
       },
@@ -71,14 +71,14 @@ export class UserService {
 
     let user: User = null // = await this.redisService.getUser(id);
 
-    this.logger.info({
+    this.logger.log({
       data: {
         thecodeline: "user null ?" + !user,
       },
     })
 
     if (!user) {
-      this.logger.info({
+      this.logger.log({
         data: {
           thecodeline: "this.userRepository.findOne",
         },
@@ -92,13 +92,13 @@ export class UserService {
           },
         })
       } catch (err) {
-        this.logger.info({
+        this.logger.log({
           message: [err.message, err.stack].join("\n"),
         })
         throw err
       }
 
-      this.logger.info({
+      this.logger.log({
         data: {
           thecodeline: "this.redisService.setUser",
         },
@@ -106,7 +106,7 @@ export class UserService {
       // await this.redisService.setUser(user);
     }
 
-    this.logger.info({
+    this.logger.log({
       data: {
         thecodeline: "===> user.service.getUser done",
       },

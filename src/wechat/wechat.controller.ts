@@ -17,26 +17,23 @@ export class WechatController {
   @Get("/wechat")
   async checkSignature(@Req() req: any, @Res() res: any) {
     try {
-      this.logger.info({
+      this.logger.log({
         data: req.query,
       })
       const { signature, timestamp, nonce, echostr } = req.query || {}
       const token = "jingyin"
       const str = [nonce, timestamp, token].sort().join("")
-      this.logger.info({
+      this.logger.log({
         data: {
           str,
         },
       })
       const sign = sha1(str)
-      this.logger.info({
-        data: {
-          sign,
-        },
+      this.logger.log({
+        sign,
       })
       res.send(sign === signature ? echostr : "")
     } catch (error) {
-      console.log(error)
       res.send("")
     }
   }
@@ -44,7 +41,6 @@ export class WechatController {
   @Post("/wechat")
   async handleMessage(@Req() req: any, @Res() res: any) {
     try {
-      console.log(req.body)
       const { FromUserName, MsgType, Event } = req.body || {}
       switch (MsgType as WechatMsgType) {
         case "event": {
@@ -70,13 +66,12 @@ export class WechatController {
       }
       res.send("success")
     } catch (error) {
-      console.log(error)
       res.send("")
+      this.logger.error({ data: error })
     }
   }
 
   handleTextMessage(message: { FromUserName: string }) {
-    console.log(message)
     this.wechatService.sendCustomerServiceMessage({
       touser: message.FromUserName,
       msgtype: "text",
@@ -87,7 +82,6 @@ export class WechatController {
   }
 
   handleImageMessage(message: { FromUserName: string }) {
-    console.log(message)
     this.wechatService.sendCustomerServiceMessage({
       touser: message.FromUserName,
       msgtype: "text",
@@ -98,7 +92,6 @@ export class WechatController {
   }
 
   handleLinkMessage(message: { FromUserName: string }) {
-    console.log(message)
     this.wechatService.sendCustomerServiceMessage({
       touser: message.FromUserName,
       msgtype: "text",
@@ -109,7 +102,6 @@ export class WechatController {
   }
 
   handleEventMessage(message: { FromUserName: string; Event: string }) {
-    console.log(message)
     if (message.Event === "user_enter_tempsession") {
       this.wechatService.sendCustomerServiceMessage({
         msgtype: "text",
@@ -122,7 +114,6 @@ export class WechatController {
   }
 
   handleMiniProgrampageMessage(message: { FromUserName: string }) {
-    console.log(message)
     this.wechatService.sendCustomerServiceMessage({
       touser: message.FromUserName,
       msgtype: "text",

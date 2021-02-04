@@ -21,8 +21,6 @@ export class ConfigService {
       test: {},
       production: productionJSON,
     }
-    console.log(envConfigMap)
-    console.log(process.env.NODE_ENV)
     if (envConfigMap[process.env.NODE_ENV]) {
       _.merge(defaultJSON, envConfigMap[process.env.NODE_ENV])
       this.env = process.env.NODE_ENV

@@ -23,7 +23,6 @@ export class AuthController {
         },
         ["id", "password"],
       )
-      console.log("user", user)
       if (!user || !this.userService.verifyPassword(loginDto.password, user.password)) {
         throw new MyHttpException({
           code: ErrorCode.ParamsError.CODE,
@@ -32,10 +31,9 @@ export class AuthController {
       }
       const curUser = await this.userService.getUser(user.id)
       req.session.userId = user.id
-      console.log(req.session.cookie)
       return curUser
     } catch (error) {
-      console.log(error)
+      this.logger.error({ data: error })
     }
   }
 
@@ -48,7 +46,6 @@ export class AuthController {
       ["id", "password"],
     )
     if (!user || !this.userService.verifyPassword(registerDto.password, user.password)) {
-      console.log("user")
       throw new MyHttpException({
         code: ErrorCode.ParamsError.CODE,
         message: "账号或密码不正确",
@@ -66,7 +63,7 @@ export class AuthController {
   async logout(@CurUser() user, @Req() req, @Res() res) {
     req.session.userId = null
     req.session.destroy(() => {
-      this.logger.info({ message: "user logout" })
+      this.logger.log({ message: "user logout" })
     })
     res.json({
       code: ErrorCode.SUCCESS.CODE,
