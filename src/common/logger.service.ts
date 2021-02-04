@@ -39,13 +39,14 @@ export class LoggerService extends NestLogger {
         zippedArchive: true,
         maxSize: "20m",
         maxFiles: "14d",
-      }),
-      new transports.Console(),
-      new transports.File({
-        dirname: logDir,
-        filename: "logs.log",
         format: format.combine(format.uncolorize()),
       }),
+      new transports.Console(),
+      // new transports.File({
+      //   dirname: logDir,
+      //   filename: "logs.log",
+      //   format: format.combine(format.uncolorize()),
+      // }),
     ],
   })
 
