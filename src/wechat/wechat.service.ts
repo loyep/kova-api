@@ -66,7 +66,7 @@ export class WechatService {
     }
   }
 
-  async urlschemeGenerate(postData: { jump_wxa?: any }, accessToken = "") {
+  async urlschemeGenerate(postData: any, accessToken = "") {
     if (!accessToken) {
       accessToken = await this.getAccessToken()
     }
@@ -75,6 +75,7 @@ export class WechatService {
       .post(url, {
         is_expire: true,
         expire_time: Date.now() / 1000 + 60,
+        jump_wxa: { path: "pages/index/index", query: "businessId=12345678" },
       })
       .toPromise()
     return data
