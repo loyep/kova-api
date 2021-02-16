@@ -8,10 +8,15 @@ import { MustIntPipe } from "@/core/pipes/must-int.pipe"
 import { CurUser } from "@/core/decorators/user.decorator"
 import { LikeService } from "./like.service"
 import { AuthGuard } from "@/core/guards/auth.guard"
+import { LoggerService } from "@/common/logger.service"
 
 @Controller()
 export class PostController {
-  constructor(private readonly postService: PostService, private readonly likeService: LikeService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly likeService: LikeService,
+    private readonly logger: LoggerService,
+  ) {}
 
   @ApiOperation({ summary: "文章点赞", tags: ["post"] })
   @PostMethod(`${APIPrefix}/posts/:postId/like`)
@@ -42,7 +47,10 @@ export class PostController {
 
   @Get(`${APIPrefix}/banners`)
   async banner() {
-    return await this.postService.bannerList()
+    const res = await this.postService.bannerList()
+    console.log(res)
+    this.logger.info(res)
+    return res
   }
 
   @ApiOperation({ summary: "根据slug查文章", tags: ["post"] })

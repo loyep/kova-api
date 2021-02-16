@@ -10,7 +10,6 @@ const logDir = "./storage/logs/"
 const procIndex = process.env.NODE_APP_INSTANCE === null ? 0 : process.env.NODE_APP_INSTANCE
 
 export class LoggerService extends NestLogger {
-  // logger
   private readonly logger = winston.createLogger({
     exitOnError: false,
     format: format.combine(

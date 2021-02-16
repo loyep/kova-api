@@ -11,7 +11,7 @@ export class MyHttpException extends HttpException {
   public readonly message: string
 
   constructor(expData: MyHttpExceptionData) {
-    if (typeof expData.code === "undefined") {
+    if (expData && typeof expData.code === "undefined") {
       expData.code = ErrorCode.ParamsError.CODE
     }
     super(expData, HttpStatus.OK)
