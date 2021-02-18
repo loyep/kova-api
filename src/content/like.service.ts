@@ -75,6 +75,6 @@ export class LikeService {
       })
       .leftJoinAndSelect("a.user", "user")
       .leftJoinAndSelect("a.category", "category")
-    return await paginate<Post>(builder, { page, limit: pageSize })
+    return await paginate<Post>(builder, { page, pageSize })
   }
 }

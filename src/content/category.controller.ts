@@ -1,9 +1,12 @@
-import { Controller, Get, Param, Query } from "@nestjs/common"
+import { Body, Controller, Get, Param, Put, Query } from "@nestjs/common"
 import { CategoryNotFound, CategoryService } from "./category.service"
 import { AdminAPIPrefix, APIPrefix } from "@/constants/constants"
 import { ApiOperation } from "@nestjs/swagger"
 import { LoggerService } from "@/common/logger.service"
-import { ParsePagePipe } from "@/core/pipes/parse-page.pipe"
+import { ParsePagePipe, ParsePageSizePipe } from "@/core/pipes/parse-page.pipe"
+import { MyHttpException } from "@/core/exceptions/my-http.exception"
+import { ErrorCode } from "@/constants/error"
+import { Category } from "@/entity/category.entity"
 
 @Controller()
 export class CategoryController {
@@ -34,5 +37,48 @@ export class CategoryController {
   async show(@Param("id") id: number) {
     const category = await this.categoryService.findById(id)
     return category
+  }
+
+  // @ApiOperation({ summary: "查询分类", tags: ["category"] })
+  @Get(`${AdminAPIPrefix}/category`)
+  index(
+    @Query("s") s: string,
+    @Query("page", ParsePagePipe) page: number,
+    @Query("pageSize", ParsePageSizePipe) pageSize: number,
+  ) {
+    return this.categoryService.index(page, pageSize, { s }, [
+      "id",
+      "image",
+      "name",
+      "description",
+      "postsCount",
+      "slug",
+      "createdAt",
+    ])
+  }
+
+  @Get(`${AdminAPIPrefix}/category/:id`)
+  async showTag(@Param("id") id: number | string) {
+    try {
+      const category = await this.categoryService.findById(id)
+      return category
+    } catch (error) {
+      throw new MyHttpException({
+        code: ErrorCode.NotFound.CODE,
+        message: ErrorCode.NotFound.MESSAGE,
+      })
+    }
+  }
+
+  @Put(`${AdminAPIPrefix}/category/:id`)
+  async updateTag(@Param("id") id: number | string, @Body() category: Category) {
+    try {
+      return await this.categoryService.update(id, category)
+    } catch (error) {
+      throw new MyHttpException({
+        code: ErrorCode.NotFound.CODE,
+        message: ErrorCode.NotFound.MESSAGE,
+      })
+    }
   }
 }

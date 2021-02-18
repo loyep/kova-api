@@ -26,8 +26,21 @@ export class CategoryService {
   async paginate(page: number, { s }: { s?: string } = {}) {
     return await paginate<Category>(
       this.repo,
-      { page, limit: 20 },
+      { page, pageSize: 20 },
       {
+        where: {
+          ...(s ? { name: Like(`%${s}%`) } : {}),
+        },
+      },
+    )
+  }
+
+  async index(page: number, pageSize: number, { s }: { s?: string } = {}, select?: (keyof Category)[]) {
+    return await paginate<Category>(
+      this.repo,
+      { page, pageSize },
+      {
+        select,
         where: {
           ...(s ? { name: Like(`%${s}%`) } : {}),
         },
@@ -62,7 +75,7 @@ export class CategoryService {
     })
   }
 
-  findById(id: number) {
+  findById(id: number | string) {
     return this.repo.findOne({
       select: ["id", "image", "name", "description", "postsCount", "slug"],
       where: {
@@ -70,5 +83,24 @@ export class CategoryService {
       },
       relations: [],
     })
+  }
+
+  async update(tagId: number | string, newCategory: Category) {
+    try {
+      const existedUserCount = await this.repo
+        .createQueryBuilder()
+        .where("id != :id", { id: tagId })
+        .andWhere("slug = :slug", { slug: newCategory.slug })
+        .getCount()
+
+      if (existedUserCount > 0) {
+        throw "别名已被占用"
+      }
+      const res = await this.repo.update(tagId, newCategory)
+      console.log(res)
+      return await this.repo.findOneOrFail(tagId)
+    } catch (error) {
+      console.log(error)
+    }
   }
 }

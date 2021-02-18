@@ -28,8 +28,21 @@ export class TopicService {
   async paginate(page: number, { s }: { s?: string } = {}) {
     return await paginate<Topic>(
       this.repo,
-      { page, limit: 20 },
+      { page, pageSize: 20 },
       {
+        where: {
+          ...(s ? { name: Like(`%${s}%`) } : {}),
+        },
+      },
+    )
+  }
+
+  async index(page: number, pageSize: number, { s }: { s?: string } = {}, select?: (keyof Topic)[]) {
+    return await paginate<Topic>(
+      this.repo,
+      { page, pageSize },
+      {
+        select,
         where: {
           ...(s ? { name: Like(`%${s}%`) } : {}),
         },

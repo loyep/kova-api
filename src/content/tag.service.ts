@@ -29,8 +29,21 @@ export class TagService {
   async paginate(page: number, { s }: { s?: string } = {}) {
     return await paginate<Tag>(
       this.repo,
-      { page, limit: 20 },
+      { page, pageSize: 20 },
       {
+        where: {
+          ...(s ? { name: Like(`%${s}%`) } : {}),
+        },
+      },
+    )
+  }
+
+  async index(page: number, pageSize: number, { s }: { s?: string } = {}, select?: (keyof Tag)[]) {
+    return await paginate<Tag>(
+      this.repo,
+      { page, pageSize },
+      {
+        select,
         where: {
           ...(s ? { name: Like(`%${s}%`) } : {}),
         },
@@ -65,14 +78,32 @@ export class TagService {
     })
   }
 
-  async findById(id: number, select: (keyof Tag)[] = TagService.select) {
+  async findById(id: number | string, select: (keyof Tag)[] = TagService.select) {
     const tag = await this.repo.findOne({
       select,
       where: {
         id,
       },
-      relations: [],
     })
     return tag
+  }
+
+  async update(tagId: number | string, newTag: Tag) {
+    try {
+      const existedUserCount = await this.repo
+        .createQueryBuilder()
+        .where("id != :id", { id: tagId })
+        .andWhere("slug = :slug", { slug: newTag.slug })
+        .getCount()
+
+      if (existedUserCount > 0) {
+        throw "别名已被占用"
+      }
+      const res = await this.repo.update(tagId, newTag)
+      console.log(res)
+      return await this.repo.findOneOrFail(tagId)
+    } catch (error) {
+      console.log(error)
+    }
   }
 }

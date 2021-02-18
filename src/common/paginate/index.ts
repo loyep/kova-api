@@ -35,7 +35,7 @@ export async function paginate<T>(
   options: IPaginatorOptions,
   searchOptions?: FindConditions<T> | FindManyOptions<T>,
 ) {
-  const paginator: IPaginationOptions = typeof options !== "number" ? options : { page: options, limit: 20 }
+  const paginator: IPaginationOptions = typeof options !== "number" ? options : { page: options, pageSize: 20 }
   return repositoryOrQueryBuilder instanceof Repository
     ? paginateRepository<T>(repositoryOrQueryBuilder, paginator, searchOptions)
     : paginateQueryBuilder(repositoryOrQueryBuilder, paginator)
@@ -77,20 +77,20 @@ async function paginateQueryBuilder<T>(
 
 function resolveOptions(options: IPaginationOptions): [number, number, string] {
   const page = options.page
-  const limit = options.limit
+  const pageSize = options.pageSize
   const route = options.route
 
-  return [page, limit, route]
+  return [page, pageSize, route]
 }
 
 export function createPaginationObject<T>(
   items: T[],
-  totalItems: number,
+  total: number,
   currentPage: number,
-  limit: number,
+  pageSize: number,
   route?: string,
 ): Pagination<T> {
-  const totalPages = Math.ceil(totalItems / limit)
+  const totalPages = Math.ceil(total / pageSize)
 
   const hasFirstPage = route
   const hasPreviousPage = route && currentPage > 1
@@ -100,17 +100,16 @@ export function createPaginationObject<T>(
   const symbol = route && new RegExp(/\?/).test(route) ? "&" : "?"
 
   const routes: IPaginationLinks = {
-    first: hasFirstPage ? `${route}${symbol}limit=${limit}` : "",
-    previous: hasPreviousPage ? `${route}${symbol}page=${currentPage - 1}&limit=${limit}` : "",
-    next: hasNextPage ? `${route}${symbol}page=${currentPage + 1}&limit=${limit}` : "",
-    last: hasLastPage ? `${route}${symbol}page=${totalPages}&limit=${limit}` : "",
+    first: hasFirstPage ? `${route}${symbol}pageSize=${pageSize}` : "",
+    previous: hasPreviousPage ? `${route}${symbol}page=${currentPage - 1}&pageSize=${pageSize}` : "",
+    next: hasNextPage ? `${route}${symbol}page=${currentPage + 1}&pageSize=${pageSize}` : "",
+    last: hasLastPage ? `${route}${symbol}page=${totalPages}&pageSize=${pageSize}` : "",
   }
 
   const meta: IPaginationMeta = {
-    totalItems: totalItems,
+    total,
     itemCount: items.length,
-    itemsPerPage: limit,
-
+    pageSize,
     totalPages: totalPages,
     currentPage: currentPage,
   }

@@ -2,10 +2,18 @@ import { LoggerService } from "@/common/logger.service"
 import { User, UserStatus } from "@/entity/user.entity"
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { Like, Repository } from "typeorm"
+import { FindConditions, Like, ObjectLiteral, Repository, Not } from "typeorm"
+
 import { compareSync } from "bcrypt"
 import { ListResult } from "@/entity/listresult.entity"
 import { paginate } from "@/common"
+import { EntityFieldsNames } from "typeorm/common/EntityFieldsNames"
+
+type OrderType = {
+  [P in EntityFieldsNames<User>]?: "ASC" | "DESC" | 1 | -1
+}
+
+type WhereType = FindConditions<User>[] | FindConditions<User> | ObjectLiteral | string
 
 @Injectable()
 export class UserService {
@@ -36,12 +44,37 @@ export class UserService {
   paginate(page: number, { s, status = UserStatus.active }: { s?: string; status?: UserStatus } = {}) {
     return paginate<User>(
       this.repo,
-      { page, limit: 20 },
+      { page, pageSize: 20 },
       {
         where: {
           status,
           ...(s ? { name: Like(`%${s}%`) } : {}),
         },
+      },
+    )
+  }
+
+  async index(
+    page: number,
+    pageSize: number,
+    { s, where = {} }: { s?: string; where?: WhereType } = {},
+    select?: (keyof User)[],
+  ) {
+    const order: OrderType = {
+      // updatedAt: "DESC",
+      id: "DESC",
+    }
+
+    return await paginate<User>(
+      this.repo,
+      { page, pageSize },
+      {
+        select,
+        where: {
+          ...(where || ({} as any)),
+          ...(s ? { name: Like(`%${s}%`) } : {}),
+        },
+        order,
       },
     )
   }
@@ -133,5 +166,24 @@ export class UserService {
     })
     user.url = user.url || ""
     return user
+  }
+
+  findById(id: number | string) {
+    return this.repo.findOneOrFail(id)
+  }
+
+  async update(userId: number | string, newUser: User) {
+    const existedUserCount = await this.repo
+      .createQueryBuilder()
+      .where("id != :id", { id: userId })
+      .andWhere("(name = :name or email = :email)", { name: newUser.name, email: newUser.email })
+      .getCount()
+
+    this.logger.log(existedUserCount)
+    if (existedUserCount > 0) {
+      throw "别名已被占用"
+    }
+    await this.repo.update(userId, newUser)
+    return await this.repo.findOneOrFail(userId)
   }
 }

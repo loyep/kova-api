@@ -2,7 +2,7 @@ export interface IPaginationOptions {
   /**
    * the amount of items to be requested per page
    */
-  limit: number
+  pageSize: number
   /**
    * the page that is requested
    */
@@ -21,11 +21,11 @@ export interface IPaginationMeta {
   /**
    * the total amount of items
    */
-  totalItems: number
+  total: number
   /**
    * the amount of items that were requested per page
    */
-  itemsPerPage: number
+  pageSize: number
   /**
    * the total amount of pages in this paginator
    */

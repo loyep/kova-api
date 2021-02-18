@@ -40,7 +40,7 @@ export class User {
   @Column("varchar", { length: 100 })
   name: string
 
-  @Column("varchar", { length: 50, select: false })
+  @Column("varchar", { length: 50 })
   email: string
 
   @Column("varchar", { name: "display_name", nullable: true, default: null })
@@ -64,7 +64,7 @@ export class User {
   @Column("varchar", { default: UserStatus.inactivated })
   status: string
 
-  @Column("varchar", { nullable: true, default: null, select: false })
+  @Column("varchar", { nullable: true, default: null })
   bio: string
 
   @Column("varchar", {
